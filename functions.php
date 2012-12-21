@@ -60,21 +60,25 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $array =  explode (",",$stateView[1]);
   $typeUser["U"] = array();
   $typeUser["R"] = array();
+  var_dump ($array );
   foreach ($array as $key=>$value) {
   	$var = explode ("-",$value);
   	if ($var[0]=="U") {
   		array_push($typeUser["U"], $var[1]);
   	}
-  	if ($var[0]=="R") {
+  	elseif ($var[0]=="R") {
   		array_push($typeUser["R"], $var[1]);
   	}
+  	else
+  		$typeUser[$var[0]] = "";
 
   }
+
   $user = wp_get_current_user();
   $idUser = $user->ID;
   $userRole = $user->roles[0];
   //Video is visible only a user
-
+	
   if (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser))){
   
    if ((!isset($replace_video)) || ($replace_video == "")) {
