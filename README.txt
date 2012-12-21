@@ -1,6 +1,6 @@
 === WIMTVPRO ===
 Contributors: wimtv
-Tags: wim, wimtvpro, video
+Tags: wim, wimtvpro, video, plugin, admin, media
 Requires at least: 3.4
 Tested up to: 3.4
 License: GPLv2 or later
