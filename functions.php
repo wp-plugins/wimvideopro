@@ -60,7 +60,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $array =  explode (",",$stateView[1]);
   $typeUser["U"] = array();
   $typeUser["R"] = array();
-  var_dump ($array );
+ 
   foreach ($array as $key=>$value) {
   	$var = explode ("-",$value);
   	if ($var[0]=="U") {
