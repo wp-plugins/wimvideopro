@@ -38,12 +38,9 @@ register_activation_hook(__FILE__,'wimtvpro_install');
 register_deactivation_hook( __FILE__, 'wimtvpro_remove');
 
 function wimtvpro_install() {
-/* Create a new database field */
-  global $wpdb;
-  $table_name = $wpdb->prefix . 'wimtvpro_video';
-  if ($wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") != $table_name) {
-    wimtvpro_create_metadata_table($table_name);
-  }
+	/* Create a new database field */
+  	global $wpdb;
+	wimtvpro_create_metadata_table($table_name);
   
   // Create page MyWimTv Streaming
   $my_streaming_page = array(
@@ -121,8 +118,12 @@ add_action( 'admin_init', 'wimtvpro_setting');
 function wimtvpro_remove() {
   global $wpdb;
   $table_name = $wpdb->prefix . 'wimtvpro_video';
-  //Delete any options thats stored also?
-  $wpdb->query("DROP TABLE  '{$table_name}'");
+  $wpdb->query("DROP TABLE IF EXISTS  '{$table_name}'");
+  
+  $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
+  $wpdb->query("DROP TABLE IF EXISTS '{$table_name2}'");
+
+  
   delete_option('wp_userwimtv');
   delete_option('wp_passwimtv');
   delete_option('wp_nameSkin');
@@ -162,6 +163,9 @@ function wimtvpro_remove() {
 // Add table for wimvideo pro
 function wimtvpro_create_metadata_table($table_name) {
   global $wpdb;
+  
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  
   $table_name = $wpdb->prefix . 'wimtvpro_video';
   if (!empty ($wpdb->charset))
       $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
@@ -185,9 +189,26 @@ function wimtvpro_create_metadata_table($table_name) {
             PRIMARY KEY (contentidentifier),
             UNIQUE KEY mycolumn1 (contentidentifier)
   ) {$charset_collate};";
-     
-  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  
   dbDelta($sql);
+  
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  
+  $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
+             
+  $sql2 = "CREATE TABLE IF NOT EXISTS {$table_name2} (
+            id INT NOT NULL AUTO_INCREMENT COMMENT 'Id',
+            name varchar(100) NOT NULL COMMENT 'Name of playlist',
+            Filexml varchar(100) NOT NULL COMMENT 'File xml',
+            listVideo varchar(100) NOT NULL COMMENT 'List video contentidentifier',
+            PRIMARY KEY (id),
+            UNIQUE KEY mycolumn2 (id)
+            
+  ) {$charset_collate};";
+
+  
+  dbDelta($sql2);
+  
     
 }
 // End table for wimvideo pro
@@ -198,7 +219,7 @@ function wimtvpro_menu(){
     $user = wp_get_current_user();
     //For Admin
     if ($user->roles[0] == "administrator"){
-      add_menu_page('Configuration', 'WimVideoPro', 'administrator', 'WimVideo', 'wimtvpro_configure', plugins_url('wimtvpro/images/iconMenu.png'), 6);
+      add_menu_page('Configuration', 'WimTvPro', 'administrator', 'WimVideo', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
       add_submenu_page('WimVideo', 'My Media', 'My Media', 'administrator', 'WimVideoPro_MyMedia', 'wimtvpro_mymedia');
       add_submenu_page('WimVideo', 'My Streaming', 'My Streaming', 'administrator', 'WimVideoPro_MyStreaming', 'wimtvpro_mystreaming');
       add_submenu_page('WimVideo', 'Upload Video', 'Upload Video', 'administrator', 'WimVideoPro_UploadVideo', 'wimtvpro_upload');
@@ -206,10 +227,10 @@ function wimtvpro_menu(){
     }
     
     if ($user->roles[0]=="author") {
-      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('wimtvpro/images/iconMenu.png'), 6);
+      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
     if ($user->roles[0]=="editor") {
-      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('wimtvpro/images/iconMenu.png'), 6);
+      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
     
     
@@ -221,7 +242,7 @@ add_action('admin_menu', 'wimtvpro_menu');
 
 // Attach video into post
 function wimtvpro_media_menu($tabs) {
-  $newtab = array('wimtvpro' => __('My Streaming wimtv', 'wimtvpro_insert'));
+  $newtab = array('wimtvpro' => __('My Wimtv video', 'wimtvpro_insert'));
   return array_merge($tabs, $newtab);
   
   //VEDERE http://axcoto.com/blog/article/307
@@ -237,12 +258,12 @@ function wimtvpro_install_jquery() {
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery-ui-sortable');
   wp_enqueue_script('jquery-ui-datepicker');
-  wp_enqueue_script('timepicker', plugins_url('wimtvpro/script/timepicker/jquery.ui.timepicker.js'));
-  wp_enqueue_script('colorbox', plugins_url('wimtvpro/script/colorbox/js/jquery.colorbox.js'));
+  wp_enqueue_script('timepicker', plugins_url('script/timepicker/jquery.ui.timepicker.js', __FILE__));
+  wp_enqueue_script('colorbox', plugins_url('script/colorbox/js/jquery.colorbox.js', __FILE__));
   wp_register_style( 'colorboxCss', plugins_url('script/colorbox/css/colorbox.css', __FILE__) );
   
-  wp_enqueue_script('colorbox', plugins_url('wimtvpro/script/colorbox/js/jquery.colorbox.js'));
-  wp_register_style( 'colorboxCss', plugins_url('script/colorbox/css/colorbox.css', __FILE__) );
+  wp_enqueue_script('colorbox', plugins_url('script/colorbox/js/jquery.colorbox.js', __FILE__));
+  wp_register_style( 'colorboxCss',plugins_url('script/colorbox/css/colorbox.css', __FILE__) );
 
   wp_enqueue_style('colorboxCss');
   wp_enqueue_script('jquery-ui-core');
@@ -258,13 +279,13 @@ function wimtvpro_install_jquery() {
     wp_register_style('wimtvproCssCore',plugins_url('script/css/redmond/jquery-ui-1.8.21.custom.css', __FILE__));
     wp_enqueue_style('wimtvproCssCore');
  }
- wp_enqueue_script('wimtvproScript',plugins_url('wimtvpro/script/wimtvpro.js'));
+ wp_enqueue_script('wimtvproScript',plugins_url('script/wimtvpro.js', __FILE__));
 
 }
 
 
 function my_custom_js() {
-    echo '<script type="text/javascript">var url_pathPlugin ="' . plugins_url() . '"</script>';
+    echo '<script type="text/javascript">var url_pathPlugin ="' . plugin_dir_url(__FILE__) . '";</script>';
 }
 // Add hook for admin <head></head>
 add_action('admin_head', 'my_custom_js');
@@ -338,11 +359,11 @@ class myPersonalDate extends WP_Widget {
           $profileuser .= "<p><b>" . __("Contact") . "</b><br/>" . $arrayjsuser->email . "<br/>";
         if (get_option("wp_social")=="si") {
           if (isset($arrayjsuser->linkedinURI))
-            $profileuser .= "<a target='_new' href='" . $arrayjsuser->linkedinURI . "'><img src='" . plugins_url('wimtvpro/images/linkedin.png') . "'></a>";
+            $profileuser .= "<a target='_new' href='" . $arrayjsuser->linkedinURI . "'><img src='" . plugins_url('images/linkedin.png', __FILE__) . "'></a>";
           if (isset($arrayjsuser->twitterURI))
-            $profileuser .= "<a target='_new' href='" . $arrayjsuser->twitterURI . "'><img src='" . plugins_url('wimtvpro/images/twitter.png') . "'></a>";
+            $profileuser .= "<a target='_new' href='" . $arrayjsuser->twitterURI . "'><img src='" . plugins_url('images/twitter.png', __FILE__) . "'></a>";
           if (isset($arrayjsuser->facebookURI))
-            $profileuser .= "<a target='_new' href='" . $arrayjsuser->facebookURI . "'><img src='" . plugins_url('wimtvpro/images/facebook.png') . "'></a>";
+            $profileuser .= "<a target='_new' href='" . $arrayjsuser->facebookURI . "'><img src='" . plugins_url('images/facebook.png', __FILE__) . "'></a>";
           $profileuser .= "</p>";
         }
         echo $profileuser;

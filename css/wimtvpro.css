@@ -95,6 +95,11 @@ ul.items li div.thumb .icon_remove {
 ul.items li div.thumb .icon_viewVideo {
 	background: transparent url('../images/viewThumb.png') no-repeat center center;
 }
+ul.items li div.thumb .icon_playlist {
+	background: transparent url('../images/playlist.png') no-repeat center center;
+	opacity:0.4;
+filter:alpha(opacity=40); /* For IE8 and earlier */
+}
 
 ul.items li div.thumb .icon_moveThumbs {
 	background: transparent url('../images/arrow.png') no-repeat center center;

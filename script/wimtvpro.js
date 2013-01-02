@@ -4,7 +4,7 @@ jQuery(document).ready(function(){
 	
 		jQuery.ajax({
 			context: this,
-			url:  url_pathPlugin + "/wimtvpro/scripts.php", 		      
+			url:  url_pathPlugin + "/scripts.php", 		      
 			type: "GET",
 			dataType: "html",
 			async: false,
@@ -40,7 +40,7 @@ jQuery(document).ready(function(){
 		    var stateView = jQuery(this).attr("rel").split('|');
 		    var roles = jQuery.ajax({
 						context: this,
-						url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+						url:  url_pathPlugin + "/scripts.php", 
 						type: "GET",
 						dataType: "html",
 						async: false, 
@@ -54,7 +54,7 @@ jQuery(document).ready(function(){
 			}).responseText;
 			var users = jQuery.ajax({
 						context: this,
-						url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+						url:  url_pathPlugin + "/scripts.php", 
 						type: "GET",
 						dataType: "html",
 						async: false, 
@@ -122,7 +122,7 @@ jQuery(document).ready(function(){
 					//alert (id);
 					jQuery.ajax({
 						context: this,
-						url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+						url:  url_pathPlugin + "/scripts.php", 
 						type: "GET",
 						dataType: "html",
 						data:{ 
@@ -153,7 +153,7 @@ jQuery(document).ready(function(){
 	function putST(element,namefunction,licenseType,paymentMode,ccType,pricePerView,pricePerViewCurrency,changeClass,coId,id){
 		jQuery.ajax({
 			context: this,
-			url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+			url:  url_pathPlugin + "/scripts.php", 
 			type: "GET",
 			dataType: "html",
 			data:{ 
@@ -182,7 +182,7 @@ jQuery(document).ready(function(){
 					element.parent().parent().children(".icon").children("span." + changeClass).attr("id", json.showtimeIdentifier);			        		
 					
 					element.parent().parent().children(".icon").children("a.viewThumb").show();
-					url=  "admin/config/wimtvpro/embedded/" + id + "/" + json.showtimeIdentifier;
+					url=  "admin/config/embedded/" + id + "/" + json.showtimeIdentifier;
 					element.parent().parent().children(".icon").children("a.viewThumb").attr("id",url);
 					element.parent().remove();			        		
 				} else {
@@ -278,7 +278,7 @@ jQuery(document).ready(function(){
 		}
 		jQuery.ajax({
 				context: this,
-				url:  url_pathPlugin + "/wimtvpro/scripts.php", 		      
+				url:  url_pathPlugin + "/scripts.php", 		      
 				type: "GET",
 				dataType: "html",
 				data: "namefunction=" + namefunction + "&id=" + element.parent().parent().parent().parent().attr("id") + coId , 
@@ -322,7 +322,7 @@ jQuery(document).ready(function(){
 	jQuery(".icon_sync0").click(function(){
 		jQuery.ajax({
 			context: this,
-			url:  url_pathPlugin + "/wimtvpro/sync.php",
+			url:  url_pathPlugin + "/sync.php",
 			dataType: "html",
 			data: {sync:true,showtime:jQuery("ul.items").attr("id")},
 			type: "GET",
@@ -388,7 +388,7 @@ jQuery(document).ready(function(){
 	jQuery(".createUrl").click(function(){
 	  jQuery.ajax({
 			context: this,
-			url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+			url:  url_pathPlugin + "/scripts.php", 
 			type: "GET",
 			dataType: "html",
 			data:{
@@ -410,7 +410,7 @@ jQuery(document).ready(function(){
 			    jQuery(".createPass").click(function(){
 			     jQuery.ajax({
 			     context: this,
-			     url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+			     url:  url_pathPlugin + "/scripts.php", 
 			     type: "GET",
 			     dataType: "html",
 			     data:{
@@ -525,7 +525,7 @@ jQuery(document).ready(function() {
       var id = jQuery(this).attr('id');
 	  jQuery.ajax({
 	    context: this,
-        url:  url_pathPlugin + "/wimtvpro/scripts.php", 
+        url:  url_pathPlugin + "/scripts.php", 
 	    type: "GET",
 	    data:{ 
 	      HFrame : height,

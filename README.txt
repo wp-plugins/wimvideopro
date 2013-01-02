@@ -11,17 +11,22 @@ The Wim TV Pro module allows users to extend the benefits of the video streaming
 
 == Description ==
 
-The Wim TV Pro module allows users to extend the benefits of the video streaming services of WimTV to their wordpress installation, specifically
+WimTVPro is a module  that allows its users to:
 <ol>
-<li>create a digital locker of their videos on WimTV</li>
-<li>describe videos</li>
-<li>create WebTVs</li>
-<li>manage the programming of their WebTVs by drawing videos from their digital lockers</li>
-<li>insert iframes of videos in HTML pages</li>
-<li>let visitors of their WebTVs or their web pages watch their videos streamed by WebTVs</li>
-<li>set live event</li>
-</ol>
+<li> Connect (with their own credentials) to their channel on WimTV, in order to obtain a list of all own video and each descriptive metadata</li>
 
+<li> Given a list of video, publish those of choice on their own web site</li>
+
+<li> For each video published, set of access conditions (free, pay per view, subscription)</li>
+
+<li> Change with drag-and-drop the order of presentation of video on a web page</li>
+
+<li> Upload new videos, describe and publish</li>
+
+<li> Insert the video anywhere on the page (for example at the end or within a paragraph or in "blocks")</li>
+
+<li> Synchronize video with own WimTV account (if you posted a video with some conditions, these are also updated on WimTV)</li>
+</ol>
 Demo user is http://research.cedeo.net/wordpress/
 
 == Installation ==
@@ -32,6 +37,12 @@ Demo user is http://research.cedeo.net/wordpress/
 4. IMPORTANT - First go to "Wimtv configuration" to find all the configuration options.
 To set your username and password of Wim.tv registration.
 For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
+
+== Changelog ==
+
+= 1.0 =
+* Fixed problem with url of images and script jquery
+
 
 == Contacts ==
 For Commercial:

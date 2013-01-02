@@ -69,7 +69,7 @@ function wimtvpro_mystreaming(){
     });}); </script>';
 
    	echo "<div class='wrap'><h2>My Streaming</h2>";
-   	$title = "<div class='action'>
+   	$title = "<div id='poststuff'><div class='action'>
    	<span class='icon_sync0' title='Syncronize'>Syncronize</span>";
    	$user = wp_get_current_user();
 	$idUser = $user->ID;
@@ -77,9 +77,38 @@ function wimtvpro_mystreaming(){
    	if ($user->roles[0] == "administrator"){
    	  $title .= "<span class='icon_save' id='save'>Save</span>";
 	}
-	$getThumbs =   $title . "</div><ul class='items' id='TRUE'>" . wimtvpro_getThumbs(TRUE) . "</ul>"; 
+	$getThumbs =   $title . "</div>
+		<div id='post-body' class='metabox-holder columns-2'>
+			<div id='post-body-content'> 
+				<ul class='items' id='TRUE'>" . wimtvpro_getThumbs(TRUE) . "</ul>
+			</div>
+		</div>"; 
 	echo $getThumbs;
-	echo "</div>"; 
+	echo "</div></div>";
+	
+	
+	echo '<div class="postbox-container">
+        <div class="metabox-holder">
+            <div class="meta-box-sortables">
+                <div class="postbox" id="first">
+                    <h3><span>PlayList</span></h3>
+                    <div class="inside">';
+    
+	//Count playlist saved in DB
+                
+    $count +=1;                
+    //echo '<div id="playlist" rel="">Playlist ' . $count .  '</div>';
+echo '<div id="playlist" rel="">Cooming soon</div>';
+   
+	 echo '</div>
+    </div>
+                
+            </div>
+        </div>
+    </div>';
+	
+	echo "</div>";
+
 }
 
 

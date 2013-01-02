@@ -153,7 +153,8 @@ function wimtvpro_configure(){
 function media_wimtvpro_process() {
   media_upload_header();
   
-  $videos = "<ul class='itemsInsert'>" . wimtvpro_getThumbs(TRUE, FALSE, TRUE) . "</ul><div class='empty'></div>";
+  $videos .= "<h3 class='media-title'>My Streaming</h3><ul class='itemsInsert'>" . wimtvpro_getThumbs(TRUE, FALSE, TRUE) . "</ul><div class='empty'></div>";
+  $videos .= "<h3 class='media-title'>My PlayList</h3><ul class='itemsInsert'></ul><div class='empty'></div>";
   echo $videos;
 
 }
@@ -161,5 +162,6 @@ function wimtvpro_media_menu_handle() {
     return wp_iframe( 'media_wimtvpro_process');
 }
 add_action('media_upload_wimtvpro', 'wimtvpro_media_menu_handle');
+
 
 ?>
