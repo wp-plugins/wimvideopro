@@ -436,5 +436,5 @@ if (isset($_POST["wimtvpro_live"])) {
 
 
 function wimtvpro_checkCleanUrl($base, $url) {
-  return plugins_url("wimtvpro/" . $base . "/" . $url);
+  return plugins_url($base . "/" . $url, __FILE__);
 }
