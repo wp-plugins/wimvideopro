@@ -141,10 +141,10 @@ jQuery(document).ready(function(){
 						success: function(response) {
 							jQuery.colorbox.close();	
 							element.parent().parent().children(".icon").children("span").attr("rel",state); 	
-						},
+						}
 					});
 				});
-			},
+			}
 		});
 		
 	}	
@@ -393,7 +393,7 @@ jQuery(document).ready(function(){
 			dataType: "html",
 			data:{
 				namefunction: "urlCreate",
-				titleLive: jQuery("#edit-name").val(),	
+				titleLive: jQuery("#edit-name").val()	
 			},
 			success: function(response) {
 			  var json =  jQuery.parseJSON(response);
@@ -415,7 +415,7 @@ jQuery(document).ready(function(){
 			     dataType: "html",
 			     data:{
 				  namefunction: "passCreate",
-				  newPass: jQuery("#passwordLive").val(),	
+				  newPass: jQuery("#passwordLive").val()
 			     },
                  success: function(response) {
                  	alert (response);
@@ -541,19 +541,51 @@ jQuery(document).ready(function() {
 	  });
   });
   
-  jQuery('.icon_createPlay').click(function() {
-  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
-  	alert (nameNewPlaylist);
-  	//add to DB
-  	
-  	//remove input and add 
-  	
-  });
-  
+    
+  //Playlist
    jQuery('.icon_selectPlay').click(function() {
   	jQuery(".playlist").removeClass("selected");
   	 jQuery(this).parent().addClass("selected");
   });
+
+
+  jQuery('.icon_createPlay').click(function() {
+  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
+  	alert (nameNewPlaylist);
+  	//add to DB
+  	jQuery.ajax({
+	    context: this,
+        url:  url_pathPlugin + "scripts_playlist.php", 
+	    type: "GET",
+	    data:{ 
+	      HFrame : height,
+	      WFrame : width,
+	      id : id,
+	      namefunction: "createPlaylist"
+	    },
+	    success: function(response){
+	  		var newRiga = '<div class="playlist" id="playlist_' +  response + '" rel=""><input type="text" value="Playlist ' +  response + '" /><span class="icon_selectPlay"></span><span class="icon_createPlay"></span></div>
+	  	},
+	    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+	  });
+  
+  	
+  });
+  
+  
+  jQuery('.icon_deletePlay').click(function() {
+  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
+  	alert (nameNewPlaylist);
+  	//remove from DB
+  	
+  	//remove div
+  	jQuery(this).parent().remove();
+  	
+  });
+
+
+
+  //End Playlist
 
   
 }); 
