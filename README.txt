@@ -5,7 +5,7 @@ Requires at least: 3.4
 Tested up to: 3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.1
+Stable tag: 1.2
 
 The Wim TV Pro module allows users to extend the benefits of the video streaming services of www.wim.tv to their wordpress installation.
 
@@ -44,6 +44,8 @@ For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
 * Fixed problem with url of images and script jquery
 = 1.1 =
 * Fixed bug Syncronize
+= 1.2 =
+* Fixed url jquery
 
 == Screenshots ==
 1. '/assets/screenshot_1.png'
