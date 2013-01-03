@@ -34,7 +34,7 @@ function wimtvpro_mystreaming(){
 
   jQuery.ajax({
   context: this,
-  url:  url_pathPlugin + "/wimtvpro/scripts.php",
+  url:  url_pathPlugin + "scripts.php",
   type: "GET",
   dataType: "html",
   data: "namefunction=ReSortable&ordina=" + ordina , 
