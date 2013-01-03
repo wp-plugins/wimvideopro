@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Wim Video Pro
+Plugin Name: Wim Tv Pro
 Plugin URI: http://www.wim.tv
 Description: Publish your wimtv's video
-Version: 1.0
+Version: 1.1
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
