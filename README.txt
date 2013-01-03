@@ -42,6 +42,8 @@ For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
 
 = 1.0 =
 * Fixed problem with url of images and script jquery
+= 1.1 =
+* Fixed bug Syncronize
 
 == Screenshots ==
 1. '/assets/screenshot_1.png'
