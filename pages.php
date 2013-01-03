@@ -95,10 +95,22 @@ function wimtvpro_mystreaming(){
                     <div class="inside">';
     
 	//Count playlist saved in DB
-                
+	/*
+	global $wpdb; 
+    $table_name = $wpdb->prefix . 'wimtvpro_playlist';
+	$array_playlist = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND position<>0 " . $sql_where . " ORDER BY name ASC");
+  	$count=count($array_playlist);
+  	if ($count>0) {
+    	foreach ($array_playlist as $record_new) {
+      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new["id"] . '"><span class="title">' . $record_new["name"] .  '<span class="icon_modTitlePlay"></span></div>';
+    	}
+  	}
+
+   
     $count +=1;                
-    //echo '<div id="playlist" rel="">Playlist ' . $count .  '</div>';
-echo '<div id="playlist" rel="">Cooming soon</div>';
+    echo '<div class="playlist selected" id="playlist_' . $count . '" rel=""><input type="text" value="Playlist ' . $count .  '" /><span class="icon_selectPlay"></span><span class="icon_createPlay"></span></div>';
+*/
+	echo "<p>Cooming soon</p>";
    
 	 echo '</div>
     </div>

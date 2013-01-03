@@ -244,3 +244,16 @@ div.empty {
 	clear: both;
 	margin: 30px 0 30px 0;
 }
+
+
+.icon_modTitlePlay {
+	background: transparent url('../images/mod.png') no-repeat center center; width:20px; height:20px; display:block; float:right; cursor:pointer;
+}
+.icon_selectPlay {
+	background: transparent url('../images/select.png') no-repeat center center; width:20px; height:20px;display:block; float:left; cursor:pointer;
+}
+.icon_createPlay {
+	background: transparent url('../images/add.png') no-repeat center center; width:20px; height:20px;display:block; float:right; cursor:pointer;
+}
+
+

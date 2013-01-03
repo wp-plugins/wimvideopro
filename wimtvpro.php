@@ -200,6 +200,7 @@ function wimtvpro_create_metadata_table($table_name) {
             id INT NOT NULL AUTO_INCREMENT COMMENT 'Id',
             name varchar(100) NOT NULL COMMENT 'Name of playlist',
             Filexml varchar(100) NOT NULL COMMENT 'File xml',
+            uid varchar(100) NOT NULL COMMENT 'User identifier',
             listVideo varchar(100) NOT NULL COMMENT 'List video contentidentifier',
             PRIMARY KEY (id),
             UNIQUE KEY mycolumn2 (id)
