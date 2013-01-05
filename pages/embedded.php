@@ -34,7 +34,13 @@
     }
     else
       $skin = "";
+
     
+    $height = get_option("wp_heightPreview") +150;
+	$width = get_option("wp_widthPreview") +280;
+	$widthP = get_option("wp_widthPreview") +250;
+    
+
     $url = get_option("wp_basePathWimtv") . get_option("wp_urlVideosWimtv") . "/" . $arrayST["contentId"] . '/embeddedPlayers';
     $url .= "?get=1&width=" . get_option("wp_widthPreview") . "&height=" . get_option("wp_heightPreview") . $skin;
     //echo $url;
@@ -45,7 +51,12 @@
     curl_setopt($ch, CURLOPT_USERPWD, $credential);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     $response = curl_exec($ch);
-    $output .= $response;
+   
+
+	echo "<div style='text-align:center;height:" . $height . "px;width:" . $width . "px;'>";
+	$output .= $response;
+
+    
     $output .= "<h3>" . $arrayST["title"] . "</h3>";
 
     $output .= "<p>" . $arrayST["description"] . "</p>";
@@ -63,7 +74,7 @@
       }
       $output .= "</p>";
     }
-    echo $output;
+    echo $output . "</div>";
  }   
 
 ?>

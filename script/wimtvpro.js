@@ -141,10 +141,10 @@ jQuery(document).ready(function(){
 						success: function(response) {
 							jQuery.colorbox.close();	
 							element.parent().parent().children(".icon").children("span").attr("rel",state); 	
-						},
+						}
 					});
 				});
-			},
+			}
 		});
 		
 	}	
@@ -353,7 +353,9 @@ jQuery(document).ready(function(){
 				jQuery(".icon_remove").click(function(){
 				callRemoveVideo(jQuery(this));
 				});
-	
+				jQuery('.icon_playlist').click(function() {    
+					callInsertIntoPlayList($(this));	   
+				});
 				callviewVideothumbs(jQuery(this));
 			},
 			
@@ -393,7 +395,7 @@ jQuery(document).ready(function(){
 			dataType: "html",
 			data:{
 				namefunction: "urlCreate",
-				titleLive: jQuery("#edit-name").val(),	
+				titleLive: jQuery("#edit-name").val()	
 			},
 			success: function(response) {
 			  var json =  jQuery.parseJSON(response);
@@ -415,7 +417,7 @@ jQuery(document).ready(function(){
 			     dataType: "html",
 			     data:{
 				  namefunction: "passCreate",
-				  newPass: jQuery("#passwordLive").val(),	
+				  newPass: jQuery("#passwordLive").val()
 			     },
                  success: function(response) {
                  	alert (response);
@@ -540,20 +542,180 @@ jQuery(document).ready(function() {
 	    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
 	  });
   });
-  
-  jQuery('.icon_createPlay').click(function() {
-  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
-  	alert (nameNewPlaylist);
-  	//add to DB
-  	
-  	//remove input and add 
-  	
+  jQuery('.buttonInsertPlayList').click(function() {
+      var id = jQuery(this).attr('id');
+	  jQuery.ajax({
+	    context: this,
+        url:  url_pathPlugin + "pages/embeddedPlayList.php", 
+	    type: "GET",
+	    data:{ 
+	      id : id,
+	      page:true
+	    },
+	    success: function(response){
+	  	  var win = window.dialogArguments || opener || parent || top;
+          win.send_to_editor(response); 
+	    },
+	    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+	  });
   });
+    
+  //Playlist
+  functionPlaylist();
   
-   jQuery('.icon_selectPlay').click(function() {
-  	jQuery(".playlist").removeClass("selected");
-  	 jQuery(this).parent().addClass("selected");
-  });
+  jQuery('.icon_playlist').click(function() {    callInsertIntoPlayList(jQuery(this));	   });
+
+	function callInsertIntoPlayList(elem) {
+   			var contentIdAdd = elem.attr("rel");
+
+   			var playlistId = "";
+   			jQuery(".playlist").each(function(i) {
+   			  var classe = jQuery(this).attr("class");
+   			  if (classe=="playlist selected"){
+   			    playlistId = jQuery(this).attr("rel");
+   			  }
+   			});
+   			if (playlistId == ""){
+   				alert ("First, You must selected a playlist");
+   			}else{
+   		
+   			
+   				jQuery.ajax({
+				    context: this,
+			        url:  url_pathPlugin + "script_playlist.php", 
+				    type: "GET",
+				    data:{
+				      idPlayList : playlistId,
+				      id : contentIdAdd,
+				      namefunction: "AddVideoToPlaylist"
+				    },
+				    success: function(response){
+				  		//jQuery(this).hide();
+				  		if (response!="") 
+				  			alert(response);
+				  		else {
+					  		jQuery(".playlist").each(function(i) {
+				   			  var classe = jQuery(this).attr("class");
+				   			  if (classe=="playlist selected"){
+				   			    var counter = parseInt(jQuery(this).children(".counter").html());
+				   			    jQuery(this).children(".counter").html(counter +1);
+				   			  }
+				   			  alert ("The video is insert into playlist selected!");
+				   			});
+				   		}
+
+				  	},
+				    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+				  });
+   			}
+   			
+   			   			
+	}
+
+  
+  function functionPlaylist(){
+  
+         
+	   jQuery('.playlist input.title').change(function() {
+	    jQuery(this).parent().children('.icon_modTitlePlay').show();
+	   });
+	   
+	   jQuery('.icon_selectPlay').click(function() {
+	  	jQuery(".playlist").removeClass("selected");
+	  	 jQuery(this).parent().addClass("selected");
+	  });
+	
+	jQuery(".icon_viewPlay").click(function () {
+		var id= jQuery(this).parent().attr("rel");
+		jQuery(this).colorbox({href:  url_pathPlugin + "pages/embeddedPlayList.php?id=" + id});
+	});
+	
+	  jQuery('.icon_createPlay').click(function() {
+	  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
+	  	//ID = playlist_##
+	  	var count = jQuery(".playlist").size();
+	  	count  = count + 1; 
+	  	//add to DB
+	  	jQuery.ajax({
+		    context: this,
+	        url:  url_pathPlugin + "script_playlist.php", 
+		    type: "GET",
+		    data:{ 
+		      namePlayList : nameNewPlaylist,
+		      namefunction: "createPlaylist"
+		    },
+		    success: function(response){
+		        
+		  		var newRiga = '<div class="playlist new" id="playlist_' +  count  + '" rel=""><span class="icon_selectPlay" style="visibility:hidden"></span><input type="text" value="Playlist ' +  count  + '" /><span class="icon_createPlay"></span></div>';
+		  		jQuery(this).parent().parent().append(newRiga);
+		  		jQuery(this).parent().removeClass("new");
+		  		jQuery(this).parent().append('(<span class="counter">0</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span><span class="icon_viewPlay"></span>');
+		  		jQuery(this).parent().children("input").addClass("title");
+		  		jQuery(this).parent().attr("rel",response);
+		  		jQuery(this).parent().children(".icon_selectPlay").attr("style","");
+		  		jQuery(".playlist").removeClass("selected");
+		  		jQuery(this).parent().addClass("selected");
+		  		jQuery(this).remove();
+		  		functionPlaylist();
+		  		
+		  		
+		  	},
+		    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+		  });
+	  
+	  	
+	  });
+	  
+	  jQuery('.icon_modTitlePlay').click(function() {
+	  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
+	  	//ID = playlist_##
+	  	var idPlayList = jQuery(this).parent().attr("rel"); 
+	  	//add to DB
+	  	jQuery.ajax({
+		    context: this,
+	        url:  url_pathPlugin + "script_playlist.php", 
+		    type: "GET",
+		    data:{
+		      idPlayList : idPlayList,
+		      namePlayList : nameNewPlaylist,
+		      namefunction: "modTitlePlaylist"
+		    },
+		    success: function(response){
+		  		jQuery(this).hide();
+		  	},
+		    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+		  });
+	  
+	  	
+	  });
+	
+	  
+	  jQuery('.icon_deletePlay').click(function() {
+	  	var nameNewPlaylist = jQuery(this).parent().children("input").val();
+	  	//remove from DB
+	  	var idPlayList = jQuery(this).parent().attr("rel");
+	  	//add to DB
+	  	jQuery.ajax({
+		    context: this,
+	        url:  url_pathPlugin + "script_playlist.php", 
+		    type: "GET",
+		    data:{
+		      idPlayList : idPlayList,
+		      namefunction: "removePlaylist"
+		    },
+		    success: function(response){
+		  		jQuery(this).parent().remove();
+		  		var count = jQuery(".playlist").size();
+		  		jQuery(".new").children("input").val("Playlist " + count);
+		  	},
+		    error: function(jqXHR, textStatus, errorThrown){alert(errorThrown);} 
+		  });
+	  	
+	  });
+  }
+
+
+  //End Playlist
 
   
 }); 

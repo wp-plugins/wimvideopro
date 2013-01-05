@@ -140,7 +140,7 @@
     }
     
     //UPDATE PAGE MY STREAMING
-	$post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name = 'my_streaming_wimtv'");
+	$post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name LIKE 'my_streaming_wimtv%'");
     $my_streaming_wimtv= array();
     $my_streaming_wimtv['ID'] = $post_id;
     $my_streaming_wimtv['post_content'] = "<ul class='itemsPublic'>" . wimtvpro_getThumbs(TRUE, FALSE, FALSE, "page") . "</ul>";

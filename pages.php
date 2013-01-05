@@ -63,10 +63,14 @@ function wimtvpro_mystreaming(){
   });
 
     jQuery(document).ready(function(){
-    jQuery("a.viewThumb").click( function(){
-    var url = jQuery(this).attr("id");
-    jQuery(this).colorbox({href:url});
-    });}); </script>';
+     
+       jQuery("a.viewThumb").click( function(){
+        var url = jQuery(this).attr("id");
+        jQuery(this).colorbox({href:url});
+       });
+     }); 
+    
+    </script>';
 
    	echo "<div class='wrap'><h2>My Streaming</h2>";
    	$title = "<div id='poststuff'><div class='action'>
@@ -95,22 +99,29 @@ function wimtvpro_mystreaming(){
                     <div class="inside">';
     
 	//Count playlist saved in DB
-	/*
+	
 	global $wpdb; 
     $table_name = $wpdb->prefix . 'wimtvpro_playlist';
-	$array_playlist = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND position<>0 " . $sql_where . " ORDER BY name ASC");
-  	$count=count($array_playlist);
-  	if ($count>0) {
+	$array_playlist = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "'  ORDER BY name ASC");
+  	$numberPlaylist=count($array_playlist);
+  	$count = 1;
+  	if ($numberPlaylist>0) {
     	foreach ($array_playlist as $record_new) {
-      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new["id"] . '"><span class="title">' . $record_new["name"] .  '<span class="icon_modTitlePlay"></span></div>';
+    	
+    	    $listVideo = $record_new->listVideo;
+    	    $arrayVideo = explode(",", $listVideo);
+    	    if ($listVideo=="") $countVideo = 0;
+    	    else $countVideo = count($arrayVideo);
+      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new->id . '"><span class="icon_selectPlay"></span><input class="title" type="text" value="' . $record_new->name .  '"/>(<span class="counter">' . $countVideo . '</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span>';
+      		echo '<span class="icon_viewPlay"></span>';
+      		echo '</div>';
+    		$count +=1;
     	}
   	}
+              
+    echo '<div class="playlist new" id="playlist_' . $count . '" rel=""><span class="icon_selectPlay" style="visibility:hidden"></span><input type="text" value="Playlist ' . $count .  '" /><span class="icon_createPlay"></span></div>';
 
-   
-    $count +=1;                
-    echo '<div class="playlist selected" id="playlist_' . $count . '" rel=""><input type="text" value="Playlist ' . $count .  '" /><span class="icon_selectPlay"></span><span class="icon_createPlay"></span></div>';
-*/
-	echo "<p>Cooming soon</p>";
+	
    
 	 echo '</div>
     </div>
@@ -362,14 +373,14 @@ function wimtvpro_live(){
      default:
       break;
   }
-  
+  /*
   global $wpdb;
   $post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name = 'wimlive_wimtv'");
   $my_streaming_wimtv= array();
   $my_streaming_wimtv['ID'] = $post_id;
   $my_streaming_wimtv['post_content'] = wimtvpro_elencoLive("video", "0") . "<br/>UPCOMING EVENT<br/>" . wimtvpro_elencoLive("list", "0");
   wp_update_post($my_streaming_wimtv);
-
+*/
   
   if ($noneElenco==FALSE) {
     global $post_type_object;

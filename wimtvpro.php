@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://www.wim.tv
 Description: Publish your wimtv's video
-Version: 1.2
+Version: 2.0
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -55,10 +55,24 @@ function wimtvpro_install() {
   // Insert the post into the database
   wp_insert_post($my_streaming_page);
   
+  //$embeddedLive = wimtvpro_elencoLive("video", "0") . "<br/>UPCOMING EVENT<br/>" . wimtvpro_elencoLive("list", "0");
+  
+  $embeddedLive =  plugins_url('pages/embeddedLive.php', __FILE__);
   // Create page Event Live 
   $my_wimlive_page = array(
     'post_title'    => 'Live',
-    'post_content'  => '',
+    'post_content'  => '<script>jQuery(document).ready(function(){
+    jQuery.ajax({
+			context: this,
+			url:  "'. $embeddedLive . '", 		      
+			type: "GET",
+			dataType: "html",
+			async: false,
+			success: function(response) {
+				jQuery(".entry-content").append(response);
+			},
+		});
+    });</script>',
     'post_status'   => 'publish',
     'post_author'   => 1,
     'post_type'   => 'page',
@@ -118,10 +132,10 @@ add_action( 'admin_init', 'wimtvpro_setting');
 function wimtvpro_remove() {
   global $wpdb;
   $table_name = $wpdb->prefix . 'wimtvpro_video';
-  $wpdb->query("DROP TABLE IF EXISTS  '{$table_name}'");
+  $wpdb->query("DROP TABLE  {$table_name}");
   
   $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
-  $wpdb->query("DROP TABLE IF EXISTS '{$table_name2}'");
+  $wpdb->query("DROP TABLE {$table_name2}");
 
   
   delete_option('wp_userwimtv');
@@ -151,14 +165,13 @@ function wimtvpro_remove() {
   delete_option( 'wp_email');
   delete_option( 'wp_social');
   
-  $post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name = 'my_streaming_wimtv'");
-  wp_delete_post($post_id);
-  
-  $post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name = 'wimlive_wimtv'");
-  wp_delete_post($post_id);
+  $wpdb->query("DELETE FROM " .  $wpdb->posts . " WHERE post_name LIKE '%my_streaming_wimtv%' OR post_name LIKE '%wimlive_wimtv%'");
+
+
 
   
 }
+
 
 // Add table for wimvideo pro
 function wimtvpro_create_metadata_table($table_name) {
@@ -199,9 +212,8 @@ function wimtvpro_create_metadata_table($table_name) {
   $sql2 = "CREATE TABLE IF NOT EXISTS {$table_name2} (
             id INT NOT NULL AUTO_INCREMENT COMMENT 'Id',
             name varchar(100) NOT NULL COMMENT 'Name of playlist',
-            Filexml varchar(100) NOT NULL COMMENT 'File xml',
-            uid varchar(100) NOT NULL COMMENT 'User identifier',
-            listVideo varchar(100) NOT NULL COMMENT 'List video contentidentifier',
+            uid varchar(100) COMMENT 'User identifier',
+            listVideo varchar(100) COMMENT 'List video contentidentifier',
             PRIMARY KEY (id),
             UNIQUE KEY mycolumn2 (id)
             
@@ -259,6 +271,7 @@ function wimtvpro_install_jquery() {
   wp_enqueue_script('jquery');
   wp_enqueue_script('jquery-ui-sortable');
   wp_enqueue_script('jquery-ui-datepicker');
+  wp_enqueue_script('jwplayer', plugins_url('script/jwplayer/jwplayer.js', __FILE__));
   wp_enqueue_script('timepicker', plugins_url('script/timepicker/jquery.ui.timepicker.js', __FILE__));
   wp_enqueue_script('colorbox', plugins_url('script/colorbox/js/jquery.colorbox.js', __FILE__));
   wp_register_style( 'colorboxCss', plugins_url('script/colorbox/css/colorbox.css', __FILE__) );
@@ -317,6 +330,7 @@ class myStreaming extends WP_Widget {
     }
     function form( $instance ) {
        _e("Title");
+        $title = apply_filters( 'My WimTV Videos', $instance['title'] );
         ?>
         <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
           
@@ -383,6 +397,7 @@ class myPersonalDate extends WP_Widget {
     function form( $instance ) {
         
     	_e("Title");
+    	$title = apply_filters( 'My WimTV Profile', $instance['title'] );
         ?>
         <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
           <p>Would you like view...<br/>
