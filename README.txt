@@ -46,13 +46,11 @@ For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
 * Fixed bug Syncronize
 = 1.2 =
 * Fixed url jquery
-= 1.3 =
-* Add Playlist 
 = 2.0 =
 * Create PlayList video Streaming 
 
-== Screenshots ==
-1. '/assets/screenshot_1.png'
+== Upgrade Notice ==
+Into version 2.0 added Playlist videos. When you update insert newly user and password wimtv.
 
 == Contacts ==
 For Commercial:
