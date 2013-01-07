@@ -46,8 +46,6 @@ For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
 * Fixed bug Syncronize
 = 1.2 =
 * Fixed url jquery
-= 1.3 =
-* Add Playlist 
 = 2.0 =
 * Create PlayList video Streaming 
 
