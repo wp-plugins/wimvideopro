@@ -5,7 +5,7 @@ Requires at least: 3.4
 Tested up to: 3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 1.2
+Stable tag: 2.0
 
 The Wim TV Pro module allows users to extend the benefits of the video streaming services of www.wim.tv to their wordpress installation.
 
@@ -46,9 +46,11 @@ For sign-up http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1
 * Fixed bug Syncronize
 = 1.2 =
 * Fixed url jquery
+= 2.0 =
+* Create PlayList video Streaming 
 
-== Screenshots ==
-1. '/assets/screenshot_1.png'
+== Upgrade Notice ==
+Into version 2.0 added Playlist videos. When you update insert newly user and password wimtv.
 
 == Contacts ==
 For Commercial:
@@ -57,6 +59,3 @@ WimLabs srl
 Corso Castelfidardo 30/A
 Torino (Italy)
 riccardo@wimlabs.com
-
-
-

@@ -175,6 +175,7 @@
       curl_setopt($ch, CURLOPT_POSTFIELDS,"liveStreamPwd=" . $_GET['newPass']);      
       $response = curl_exec($ch);
       echo $response;
+
       curl_close($ch);
 	  die();
     break;

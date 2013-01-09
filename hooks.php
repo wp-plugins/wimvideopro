@@ -154,7 +154,44 @@ function media_wimtvpro_process() {
   media_upload_header();
   
   $videos .= "<h3 class='media-title'>My Streaming</h3><ul class='itemsInsert'>" . wimtvpro_getThumbs(TRUE, FALSE, TRUE) . "</ul><div class='empty'></div>";
-  $videos .= "<h3 class='media-title'>My PlayList</h3><ul class='itemsInsert'></ul><div class='empty'></div>";
+  
+  global $wpdb; 
+  $table_name = $wpdb->prefix . 'wimtvpro_playlist';
+  $array_playlist = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "'  ORDER BY name ASC");
+  $numberPlaylist=count($array_playlist);
+  if ($numberPlaylist>0) {
+    $videos .= "<h3 class='media-title'>My PlayList</h3><ul class='itemsInsert'>";
+    foreach ($array_playlist as $record_new) {
+	    $listVideo = $record_new->listVideo;
+	    $arrayVideo = explode(",", $listVideo);
+	    if ($listVideo=="") $countVideo = 0;
+	    else $countVideo = count($arrayVideo);
+	    
+	    $uploads_info = wp_upload_dir();
+    	$directory = $uploads_info["baseurl"] .  "/skinWim";
+    	$nameFile = "/playlist_" .  $record_new->id . ".xml";
+
+  		$videos .='<li><b>' . $record_new->name .  ' (<span class="counter">' . $countVideo . '</span>)</b>';
+  		$doc = simplexml_load_file($directory . $nameFile);
+		$sxe = new SimpleXMLElement($doc->asXML());
+		$channel = $sxe->channel;
+		$playlist = "<br/>Videos:<br/>";
+		foreach ($channel->item as $items) {
+		  $playlist .= " - " . $items->title . " - <br/>";
+		}
+
+  		$videos .= $playlist;
+  		
+  		$videos .= '<input type="hidden" value="' . $_GET['post_id'] . '" name="post_id">';
+        $send = get_submit_button( __( 'Insert into Post' ), 'buttonInsertPlayList', $record_new->id, false );
+
+  		
+  		$videos .= $send . '</li>';
+
+  			}
+}
+
+  $videos .= "</ul><div class='empty'></div>";
   echo $videos;
 
 }
