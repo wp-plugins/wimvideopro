@@ -166,12 +166,12 @@
     break;
     case "passCreate":
       $url_passcreate = get_option('wp_basePathWimtv') . "users/" . get_option("wp_userwimtv") . "/updateLivePwd";
-      $credential = get_option("wp_userwimtv") . ":" . get_option("wp_passwimtv");
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL,  $url_passcreate);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
        curl_setopt($ch, CURLOPT_USERPWD, $credential);
+	   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       curl_setopt($ch, CURLOPT_POSTFIELDS,"liveStreamPwd=" . $_GET['newPass']);      
       $response = curl_exec($ch);
       echo $response;
