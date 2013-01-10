@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://www.wim.tv
 Description: Publish your wimtv's video
-Version: 2.0
+Version: 2.0.1
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -237,6 +237,7 @@ function wimtvpro_menu(){
       add_submenu_page('WimVideo', 'My Streaming', 'My Streaming', 'administrator', 'WimVideoPro_MyStreaming', 'wimtvpro_mystreaming');
       add_submenu_page('WimVideo', 'Upload Video', 'Upload Video', 'administrator', 'WimVideoPro_UploadVideo', 'wimtvpro_upload');
       add_submenu_page('WimVideo', 'Wim Live', 'Wim Live', 'administrator', 'WimVideoPro_WimLive', 'wimtvpro_live');
+      add_submenu_page('WimVideo', 'Report', 'Report', 'administrator', 'WimVideoPro_Report', 'wimtvpro_Report');
     }
     
     if ($user->roles[0]=="author") {

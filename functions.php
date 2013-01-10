@@ -368,7 +368,14 @@ if (isset($_POST["wimtvpro_live"])) {
       echo '</strong></p></div>';
       $error ++;
   }
-    
+  
+  if (!isset($_POST['Public'])) {        
+      echo '<div class="error"><p><strong>';
+      _e("You must check if you event is public or private.");
+      echo '</strong></p></div>';
+      $error ++;
+  }
+  
   if ($error==0) {
      $name = $_POST['name'];
      $payperview = $_POST['payperview'];
@@ -400,9 +407,13 @@ if (isset($_POST["wimtvpro_live"])) {
     else {
       $duration = 0;
     }
+    
+    if ($_POST['Public']!="") {
+    	$public = $_POST['Public'];
+    }
     $userpeer = get_option("wp_userWimtv");
     $fields_string = "name=" . $name . "&url=" . $url . "&eventDate=" . $giorno . "&paymentMode=" . $typemode;
-    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute";
+    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public;
     $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
     $url_live = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
     if ($function=="modify")  $url_live .= "/" . $_GET['id'];

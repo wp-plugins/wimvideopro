@@ -428,12 +428,20 @@ function wimtvpro_live(){
      <p><label for="edit-url">Url *</label>
      <input type="text" id="edit-url" name="Url" value="<?php echo $url;?>" size="100" maxlength="800" class="form-text required">
      </p>
+     
+     
      <div class="description">URL through which the streaming can be done.  
        <b class="createUrl">CREATE YOUR URL</b>
        <b id="'<?php echo get_option("wp_userWimtv");?>'" class="removeUrl">REMOVE YOUR URL</b>
        <br><div class="passwordUrlLive">Password Live is missing, insert a password for live streaming: <input type="password" id="passwordLive"> <b class="createPass">Salva</b>
        </div>
      </div>
+
+	 <p> <label for="edit-url">Event Public or Private *</label><br/>
+     	Public <input type="radio" name="Public" value="true" checked="checked"/> |
+     	Private <input type="radio" name="Public" value="false"/>
+     </p>
+
 
      <p><label for="edit-giorno">Data *</label>
      <input  type="text" class="pickadate" id="edit-giorno" name="Giorno" value="<?php echo $giorno;?>" size="10" maxlength="10"></p>
@@ -457,6 +465,50 @@ function wimtvpro_live(){
   
   }
   
+}
+
+
+function wimtvpro_report (){
+
+   	echo "<div class='wrap'><h2>Report user Wimtv " . get_option("wp_userWimtv") . "</h2>";
+   	//INFORMATION USERS http://www.wim.tv:3131/api/users/CAMPTV
+   	//$urlInfoUser = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv"); 	
+   	$urlInfoUser = "http://www.wim.tv:3131/api/users/CAMPTV";
+   	$ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $urlInfoUser);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $response = curl_exec($ch);
+   	curl_close($ch);
+   	/*
+   	Json
+	  'username': The username, as a string
+	  'traffic': Total outbound traffic generated in bytes, as a string
+	}	
+	Used ### MB so far.
+	*/
+	
+	$traffic_json = json_decode($response);
+	$traffic = $traffic_json->traffic;
+	if ($traffic!="") {
+		$megabyte = 1024*1024;
+		$byteToMb = round($traffic/ $megabyte, 2) . ' MB';
+		echo "<p>Used <b>" . $byteToMb . "</b> so far.</p>";
+	} else {
+		echo "You account don't generate traffic.";
+		echo "</div>";
+		exit();
+	}
+	
+	echo "<h3>Streams (current month)</h3>";
+	
+	
+	echo "<h3>Views (current month)</h3>";
+   	
+   	echo "</div>";
+
 }
 
 
