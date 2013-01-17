@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://www.wim.tv
 Description: Publish your wimtv's video
-Version: 2.0.1
+Version: 2.0.2
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later

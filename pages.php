@@ -339,6 +339,7 @@ function wimtvpro_live(){
        curl_setopt($ch_embedded, CURLOPT_USERPWD, $credential);
        curl_setopt($ch_embedded, CURLOPT_SSL_VERIFYPEER, FALSE);
        $dati = curl_exec($ch_embedded);
+	   
        $arraydati = json_decode($dati);
        $name = $arraydati->name;
        if ($arraydati->paymentMode=="FREEOFCHARGE") 
@@ -469,11 +470,11 @@ function wimtvpro_live(){
 
 
 function wimtvpro_report (){
+	$megabyte = 1024*1024;
 
    	echo "<div class='wrap'><h2>Report user Wimtv " . get_option("wp_userWimtv") . "</h2>";
    	//INFORMATION USERS http://www.wim.tv:3131/api/users/CAMPTV
-   	//$urlInfoUser = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv"); 	
-   	$urlInfoUser = "http://www.wim.tv:3131/api/users/CAMPTV";
+   	$urlInfoUser = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv"); 	
    	$ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $urlInfoUser);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -493,7 +494,6 @@ function wimtvpro_report (){
 	$traffic_json = json_decode($response);
 	$traffic = $traffic_json->traffic;
 	if ($traffic!="") {
-		$megabyte = 1024*1024;
 		$byteToMb = round($traffic/ $megabyte, 2) . ' MB';
 		echo "<p>Used <b>" . $byteToMb . "</b> so far.</p>";
 	} else {
@@ -502,10 +502,58 @@ function wimtvpro_report (){
 		exit();
 	}
 	
-	echo "<h3>Streams (current month)</h3>";
+	//echo "<h3>Streams (current month)</h3>";
 	
 	
 	echo "<h3>Views (current month)</h3>";
+	
+	$urlView = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv") . "/views"; 	
+   	$ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $urlView);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $response = curl_exec($ch);
+   	curl_close($ch);
+    $arrayView = json_decode($response);
+    echo '<table class="wp-list-table widefat fixed posts">
+      <tr>
+        <th class="manage-column column-title">End Time</th>
+    	<th class="manage-column column-title">Duration</th>
+    	<th class="manage-column column-title">Traffic</th>
+    	<th class="manage-column column-title">Video URL</th>
+      </tr>
+    ';
+    
+	foreach ($arrayView as $value){
+		
+		//Pari alternate
+		$urlViewSingle = "http://www.wim.tv:3131/api/views/" . $value; 	
+		$ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $urlViewSingle);
+	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	    $responseSingle = curl_exec($ch);
+	    $arrayresponseSingle = json_decode($responseSingle);
+
+	   	curl_close($ch);
+		$traffic = $arrayresponseSingle->traffic;
+		$traffic =  round($traffic / $megabyte, 2) . " MB";
+		
+		echo "
+		 <tr class='alternate'>
+		  <td>" . $arrayresponseSingle->human_end_time . "</td>
+		  <td>" .  $arrayresponseSingle->duration . "s</td>
+		  <td>" . $traffic . "</td>
+		  <td>" .  $value . "</td>
+		 </tr>";
+	
+	}
+	echo "</table>";
+	
    	
    	echo "</div>";
 
