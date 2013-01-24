@@ -55,6 +55,7 @@
 	        $status = $video["status"];
 	        //$acquired_identifier = $video["acquired_identifier "];
 	        $title= $video["title"];
+	        $urlVideo= $video["url"];
 	        $duration= $video["duration"];
 	        $content_item =  $video["contentId"];
 	        $url_thumbs = '<img src="' . $video["thumbnailUrl"] . '"  title="' . $title . '" class="wimtv-thumbnail" />';
@@ -102,6 +103,7 @@
 	            	'acquiredIdentifier' => $acquired_identifier,
 	            	'urlThumbs' => $url_thumbs,
 	            	'category' =>  $categories,
+	            	'urlPlay' =>  $urlVideo,
 	            	'title' => $title,
 	            	'duration' => $duration,
 	            	'showtimeidentifier' => $showtime_identifier

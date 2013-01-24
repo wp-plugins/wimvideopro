@@ -470,11 +470,16 @@ function wimtvpro_live(){
 
 
 function wimtvpro_report (){
+	
+	if (get_option("wp_sandbox")=="No")
+		$baseReport = "http://www.wim.tv:3131/api/";
+	else
+		$baseReport = "http://peer.wim.tv:3131/api/";
 	$megabyte = 1024*1024;
 
    	echo "<div class='wrap'><h2>Report user Wimtv " . get_option("wp_userWimtv") . "</h2>";
    	//INFORMATION USERS http://www.wim.tv:3131/api/users/CAMPTV
-   	$urlInfoUser = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv"); 	
+   	$urlInfoUser = $baseReport . "users/" . get_option("wp_userWimtv"); 	
    	$ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $urlInfoUser);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -497,17 +502,51 @@ function wimtvpro_report (){
 		$byteToMb = round($traffic/ $megabyte, 2) . ' MB';
 		echo "<p>Used <b>" . $byteToMb . "</b> so far.</p>";
 	} else {
-		echo "You account don't generate traffic.";
+		echo "You account don't generate traffic in this month.";
 		echo "</div>";
 		exit();
 	}
 	
-	//echo "<h3>Streams (current month)</h3>";
+	echo "<h3>Streams (current month)</h3>";
+
+	$urlStream = $baseReport . "users/" . get_option("wp_userWimtv") . "/streams"; 	
+   	$ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $urlStream );
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $response = curl_exec($ch);
+   	curl_close($ch);
+    $arrayStream = json_decode($response);
+
+    echo '<table class="wp-list-table widefat fixed posts">
+      <tr>
+        <th class="manage-column column-title">Video Url</th>
+    	<th class="manage-column column-title">Views</th>
+    	<th class="manage-column column-title">Activate view</th>
+    	<th class="manage-column column-title">Max viewers</th>
+      </tr>
+    ';
+	foreach ($arrayStream as $value){
+		
+				
+		echo "
+		 <tr class='alternate'>
+		  <td>" .  $value->id . "</td>
+		  <td>" .  $value->views . "</td>
+		  <td>" . $value->viewers . "</td>
+		  <td>" .  $value->max_viewers . "</td>
+		 </tr>";
+	
+	}
+	echo "</table>";
+
 	
 	
 	echo "<h3>Views (current month)</h3>";
 	
-	$urlView = "http://www.wim.tv:3131/api/users/" . get_option("wp_userWimtv") . "/views"; 	
+	$urlView = $baseReport . "users/" . get_option("wp_userWimtv") . "/views"; 	
    	$ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $urlView);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -529,7 +568,7 @@ function wimtvpro_report (){
 	foreach ($arrayView as $value){
 		
 		//Pari alternate
-		$urlViewSingle = "http://www.wim.tv:3131/api/views/" . $value; 	
+		$urlViewSingle = $baseReport . "views/" . $value; 	
 		$ch = curl_init();
 	    curl_setopt($ch, CURLOPT_URL, $urlViewSingle);
 	    curl_setopt($ch, CURLOPT_VERBOSE, 0);

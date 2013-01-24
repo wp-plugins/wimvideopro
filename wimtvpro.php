@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Wim Tv Pro
-Plugin URI: http://www.wim.tv
+Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.2
+Version: 2.0.3
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -106,6 +106,7 @@ function wimtvpro_setting() {
   register_setting('configwimtvpro-group', 'wp_replaceUserWimtv');
   register_setting('configwimtvpro-group', 'wp_replaceacquiredIdentifier');			
   register_setting('configwimtvpro-group', 'wp_replaceshowtimeIdentifier');
+  register_setting('configwimtvpro-group', 'wp_sandbox');
   
   register_setting('profilewimtvpro-group', 'wp_name');
   register_setting('profilewimtvpro-group', 'wp_logo');
@@ -125,7 +126,7 @@ function wimtvpro_setting() {
   add_option( 'wp_date','');
   add_option( 'wp_email','');
   add_option( 'wp_social','si');
-  
+  add_option( 'wp_sandbox','No'); 
 } 
 add_action( 'admin_init', 'wimtvpro_setting');
 
@@ -195,6 +196,7 @@ function wimtvpro_create_metadata_table($table_name) {
             position int(11) NOT NULL COMMENT 'Position video user',
             viewVideoModule varchar(100) NOT NULL COMMENT 'View video into page or block',
             urlThumbs text NOT NULL COMMENT 'Url thumbs video',
+            urlPlay text NOT NULL COMMENT 'Url player video',
             category text NOT NULL COMMENT 'Category and subcategory video[Json]',
             title varchar(100) NOT NULL COMMENT 'Title videos',
             duration varchar(10) NOT NULL COMMENT 'Duration videos',
@@ -213,7 +215,7 @@ function wimtvpro_create_metadata_table($table_name) {
             id INT NOT NULL AUTO_INCREMENT COMMENT 'Id',
             name varchar(100) NOT NULL COMMENT 'Name of playlist',
             uid varchar(100) COMMENT 'User identifier',
-            listVideo varchar(100) COMMENT 'List video contentidentifier',
+            listVideo varchar(1000) COMMENT 'List video contentidentifier',
             PRIMARY KEY (id),
             UNIQUE KEY mycolumn2 (id)
             

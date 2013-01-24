@@ -58,9 +58,14 @@ function wimtvpro_configure(){
   	  	  update_option('wp_userwimtv', $_POST['userWimtv']);
           update_option('wp_passwimtv', $_POST['passWimtv']);
           update_option('wp_heightPreview', $_POST['heightPreview']);
-          update_option('wp_widthPreview', $_POST['widthPreview']);  
-          //update_option( 'wp_basePathWimtv','http://peer.wim.tv:8080/wimtv-webapp/rest/');
-          update_option( 'wp_basePathWimtv','https://www.wim.tv/wimtv-webapp/rest/');
+          update_option('wp_widthPreview', $_POST['widthPreview']);
+          
+          if ($_POST['sandbox']=="No") {
+          	update_option( 'wp_basePathWimtv','https://www.wim.tv/wimtv-webapp/rest/');
+          } else {
+          	update_option( 'wp_basePathWimtv','http://peer.wim.tv:8080/wimtv-webapp/rest/');
+          }
+          update_option('wp_sandbox', $_POST['sandbox']);
           update_option( 'wp_urlVideosWimtv','videos');
           update_option( 'wp_urlVideosDetailWimtv','videos?details=true');
           update_option( 'wp_urlThumbsWimtv','videos/{contentIdentifier}/thumbnail');
@@ -113,14 +118,25 @@ function wimtvpro_configure(){
          <h2>WimTv Configuration</h2>
         <form enctype="multipart/form-data" action="#" method="post" id="configwimtvpro-group" accept-charset="UTF-8">
             <div>
-               <h4><?php _e("If you haven't yet done, <a href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at wim.tv" ); ?></h4>
-              
+               <?php if (get_option("wp_sandbox")=="No") { ?>
+               <h4><?php _e("If you haven't yet done, <a id='sandbox' href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>www.wim.tv</strong>" ); ?></h4>
+               <?php } else { ?>
+               <h4><?php _e("If you haven't yet done, <a id='sandbox' href='http://peer.wim.tv:8080/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>peer.wim.tv</strong>" ); ?></h4>
+               <?php } ?>
+
               	<p><label for="edit-userwimtv">Username Wimtv <span class="form-required" title="">*</span>
 				<input type="text" id="edit-userwimtv" name="userWimtv" value="<?php echo get_option("wp_userwimtv");?>" size="100" maxlength="200"/></p>
 				
 				<p><label for="edit-passwimtv">Password Wimtv <span class="form-required" title="">*</span></label>
 				<input value="<?php echo get_option("wp_passwimtv");?>" type="password" id="edit-passwimtv" name="passWimtv" size="100" maxlength="200" class="form-text required" /></p>
-			
+				
+				<p><label for="edit-sandbox">Sandbox mode (test)</label>
+				<select id="edit-sandbox" name="sandbox" class="form-select">
+					<option value="No" <?php if (get_option("wp_sandbox")=="No") echo "selected='selected'" ?>>No</option>
+					<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
+				</select>
+				</p>
+
 				
 				<h4><?php _e("Upload and/or choose your skin player into <a target='new' href='http://www.longtailvideo.com/addons/skins'>page Jwplayer</a> for your videos" ); ?></h4>
 				<p><label for="edit-nameskin">Name Skin</label>

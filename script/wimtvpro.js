@@ -717,5 +717,14 @@ jQuery(document).ready(function() {
 
   //End Playlist
 
+
+	jQuery('#edit-sandbox').change (function() {
+        if(jQuery(this).value == "No") {
+            jQuery('#sandbox').attr('href','http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1');
+            jQuery('#site').html('www.wim.tv');
+        } else {
+            jQuery('#site').html('peer.wim.tv');;
+        }
+     });
   
 }); 

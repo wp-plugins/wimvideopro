@@ -169,6 +169,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
         }
       }
     }
+    
     $form = "<div class='formVideo'>" . $form_st . "</div>";
    }
    else {
@@ -183,13 +184,16 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   if ($showtime_identifier!="") {
     $style_view = "";
     $href_view = wimtvpro_checkCleanUrl("pages", "embedded.php?c=" . $content_item_new . "&s=" . $showtime_identifier);
+    $title_view = "View Video";
+    
   }
   else {
-    $style_view = "style='display:none;'";
-    $href_view = "#";
+    $style_view = "";
+    $href_view = wimtvpro_checkCleanUrl("pages", "embeddedAll.php?c=" . $content_item_new);
+    $title_view = "Preview Video";
   }
  
-    $my_media .= "<a class='viewThumb' " . $style_view . " title='View Video' href='#' id='" . $href_view . "'><span class='icon_view'></span></a>";
+    $my_media .= "<a class='viewThumb' " . $style_view . " title='" .  $title_view . "' href='#' id='" . $href_view . "'><span class='icon_view'></span></a>";
     
    $my_media .= "	</div>" . $form . "<div class='loader'></div></div>"; 
 
