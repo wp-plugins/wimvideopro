@@ -7,7 +7,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Stable tag: 2.0.3
 
-WimTVPro is the video plugin that adds several features to manage and publish video on demand, video playlists and stream live events on your WordPress website.
+WimTVPro is the video plugin that adds several features to manage and publish video on demand, video playlists and stream live events on your website.
 
 == Description ==
 
