@@ -78,7 +78,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $idUser = $user->ID;
   $userRole = $user->roles[0];
   //Video is visible only a user
-	
+
   if (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser))){
   
    if ((!isset($replace_video)) || ($replace_video == "")) {
@@ -451,6 +451,16 @@ if (isset($_POST["wimtvpro_live"])) {
   }
 }
 
+function update_page_mystreaming(){
+	  global $user,$wpdb;  
+	  $post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name LIKE 'my_streaming_wimtv%'");
+      $my_streaming_wimtv= array();
+      $my_streaming_wimtv['ID'] = $post_id;
+      $my_streaming_wimtv['post_content'] = "<ul class='itemsPublic'>" . wimtvpro_getThumbs(TRUE, FALSE, FALSE, "page") . "</ul>";
+      wp_update_post($my_streaming_wimtv);
+
+
+}
 
 function wimtvpro_checkCleanUrl($base, $url) {
   return plugins_url($base . "/" . $url, __FILE__);

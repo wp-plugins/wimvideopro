@@ -723,7 +723,8 @@ jQuery(document).ready(function() {
             jQuery('#sandbox').attr('href','http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1');
             jQuery('#site').html('www.wim.tv');
         } else {
-            jQuery('#site').html('peer.wim.tv');;
+            jQuery('#sandbox').attr('href','http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1');
+            jQuery('#site').html('peer.wim.tv');
         }
      });
   

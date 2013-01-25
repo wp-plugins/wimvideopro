@@ -142,12 +142,7 @@
     }
     
     //UPDATE PAGE MY STREAMING
-	$post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name LIKE 'my_streaming_wimtv%'");
-    $my_streaming_wimtv= array();
-    $my_streaming_wimtv['ID'] = $post_id;
-    $my_streaming_wimtv['post_content'] = "<ul class='itemsPublic'>" . wimtvpro_getThumbs(TRUE, FALSE, FALSE, "page") . "</ul>";
-    wp_update_post($my_streaming_wimtv);
-    
+	update_page_mystreaming();    
   }
   else {
     echo t("Non ci sono elementi");

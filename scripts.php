@@ -65,6 +65,10 @@
       $sql = "UPDATE " . $table_name  . " SET state='" . $state . "' ,showtimeIdentifier='" . $array_response -> showtimeIdentifier . "' WHERE contentidentifier='" . $id . "'";
       $wpdb->query($sql);
       curl_close($ch);
+      
+      //UPDATE PAGE MY STREAMING
+	  update_page_mystreaming();
+      
       echo $response;
       die();
     break;
@@ -107,6 +111,10 @@
       curl_setopt($ch, CURLOPT_POSTFIELDS, $post_field);
       $response = curl_exec($ch);
       echo $response;
+      
+      //UPDATE PAGE MY STREAMING
+	  update_page_mystreaming();
+      
       curl_close($ch);
       die();
     break;
@@ -132,6 +140,11 @@
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       $response = curl_exec($ch);
       echo $response;
+      
+      //UPDATE PAGE MY STREAMING
+	  update_page_mystreaming();
+
+      
       curl_close($ch);
       die();
     break;
@@ -139,6 +152,10 @@
       $state = $_GET['state'];
       $sql = "UPDATE " . $table_name  . " SET viewVideoModule='" . $state . "' WHERE contentidentifier='" . $id . "'";
 	  $wpdb->query($sql);
+
+	  //UPDATE PAGE MY STREAMING
+	  update_page_mystreaming();
+
       echo $state;
       die();
     break;
@@ -149,6 +166,11 @@
         $sql = "UPDATE " . $table_name  . " SET position ='" . $position . "' WHERE contentidentifier='" . $item . "'";
 	    $wpdb->query($sql);
       }
+      
+      //UPDATE PAGE MY STREAMING
+	  update_page_mystreaming();
+
+      
       die();
     break;
     case "urlCreate":
@@ -231,7 +253,9 @@
 
 		echo $response;
 		
-		
+		//UPDATE PAGE MY STREAMING
+	    update_page_mystreaming();
+
     break;
     
     case "getUsers":

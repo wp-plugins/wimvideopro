@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.3
+Version: 2.0.4
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -186,7 +186,7 @@ function wimtvpro_create_metadata_table($table_name) {
   if (!empty ($wpdb->collate))
       $charset_collate .= " COLLATE {$wpdb->collate}";
              
-  $sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+  $sql = "CREATE TABLE {$table_name} (
             uid varchar(100) NOT NULL COMMENT 'User identifier',
             contentidentifier varchar(100) NOT NULL COMMENT 'Contentidentifier Video',
             state varchar(100) NOT NULL COMMENT 'Showtime or no',
@@ -205,13 +205,13 @@ function wimtvpro_create_metadata_table($table_name) {
             UNIQUE KEY mycolumn1 (contentidentifier)
   ) {$charset_collate};";
   
+
   dbDelta($sql);
   
-  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
   
   $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
              
-  $sql2 = "CREATE TABLE IF NOT EXISTS {$table_name2} (
+  $sql2 = "CREATE TABLE {$table_name2} (
             id INT NOT NULL AUTO_INCREMENT COMMENT 'Id',
             name varchar(100) NOT NULL COMMENT 'Name of playlist',
             uid varchar(100) COMMENT 'User identifier',
