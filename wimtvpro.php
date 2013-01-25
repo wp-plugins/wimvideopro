@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.4
+Version: 2.0.3
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -178,35 +178,47 @@ function wimtvpro_remove() {
 function wimtvpro_create_metadata_table($table_name) {
   global $wpdb;
   
-  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
   
   $table_name = $wpdb->prefix . 'wimtvpro_video';
   if (!empty ($wpdb->charset))
       $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
   if (!empty ($wpdb->collate))
       $charset_collate .= " COLLATE {$wpdb->collate}";
-             
-  $sql = "CREATE TABLE {$table_name} (
-            uid varchar(100) NOT NULL COMMENT 'User identifier',
-            contentidentifier varchar(100) NOT NULL COMMENT 'Contentidentifier Video',
-            state varchar(100) NOT NULL COMMENT 'Showtime or no',
-            status varchar(100) NOT NULL COMMENT 'OWNED-ACQUIRED-PERFORMING',
-            acquiredIdentifier varchar(100) NOT NULL,
-            mytimestamp int(11) NOT NULL COMMENT 'My timestamp',
-            position int(11) NOT NULL COMMENT 'Position video user',
-            viewVideoModule varchar(100) NOT NULL COMMENT 'View video into page or block',
-            urlThumbs text NOT NULL COMMENT 'Url thumbs video',
-            urlPlay text NOT NULL COMMENT 'Url player video',
-            category text NOT NULL COMMENT 'Category and subcategory video[Json]',
-            title varchar(100) NOT NULL COMMENT 'Title videos',
-            duration varchar(10) NOT NULL COMMENT 'Duration videos',
-            showtimeIdentifier varchar(100) NOT NULL COMMENT 'showtimeIdentifier videos',
-            PRIMARY KEY (contentidentifier),
-            UNIQUE KEY mycolumn1 (contentidentifier)
-  ) {$charset_collate};";
-  
+   
+  if ( $wp_db_version == $wp_current_db_version ) {
 
-  dbDelta($sql);
+	       
+	  $sql = "  CREATE TABLE {$table_name} (
+	            uid varchar(100) NOT NULL COMMENT 'User identifier',
+	            contentidentifier varchar(100) NOT NULL COMMENT 'Contentidentifier Video',
+	            state varchar(100) NOT NULL COMMENT 'Showtime or no',
+	            status varchar(100) NOT NULL COMMENT 'OWNED-ACQUIRED-PERFORMING',
+	            acquiredIdentifier varchar(100) NOT NULL,
+	            mytimestamp int(11) NOT NULL COMMENT 'My timestamp',
+	            position int(11) NOT NULL COMMENT 'Position video user',
+	            viewVideoModule varchar(100) NOT NULL COMMENT 'View video into page or block',
+	            urlThumbs text NOT NULL COMMENT 'Url thumbs video',
+	            urlPlay text NOT NULL COMMENT 'Url player video',
+	            category text NOT NULL COMMENT 'Category and subcategory video[Json]',
+	            title varchar(100) NOT NULL COMMENT 'Title videos',
+	            duration varchar(10) NOT NULL COMMENT 'Duration videos',
+	            showtimeIdentifier varchar(100) NOT NULL COMMENT 'showtimeIdentifier videos',
+	            PRIMARY KEY (contentidentifier),
+	            UNIQUE KEY mycolumn1 (contentidentifier)
+	  ) {$charset_collate};";
+	  
+	  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	  dbDelta($sql);
+  
+  } else {
+  
+  	$sql = "  ALTER TABLE   {$table_name}  ADD   urlThumbs text NOT NULL COMMENT 'Url thumbs video' "
+	   	  
+	  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	  dbDelta($sql);
+
+  
+  }
   
   
   $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
@@ -221,7 +233,7 @@ function wimtvpro_create_metadata_table($table_name) {
             
   ) {$charset_collate};";
 
-  
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
   dbDelta($sql2);
   
     
