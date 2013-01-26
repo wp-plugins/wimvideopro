@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.3
+Version: 2.0.4
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -177,8 +177,7 @@ function wimtvpro_remove() {
 // Add table for wimvideo pro
 function wimtvpro_create_metadata_table($table_name) {
   global $wpdb;
-  
-  
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
   $table_name = $wpdb->prefix . 'wimtvpro_video';
   if (!empty ($wpdb->charset))
       $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
@@ -212,7 +211,7 @@ function wimtvpro_create_metadata_table($table_name) {
   
   } else {
   
-  	$sql = "  ALTER TABLE   {$table_name}  ADD   urlThumbs text NOT NULL COMMENT 'Url thumbs video' "
+  	$sql = "  ALTER TABLE   {$table_name}  ADD   urlThumbs text NOT NULL COMMENT 'Url thumbs video' ";
 	   	  
 	  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	  dbDelta($sql);
