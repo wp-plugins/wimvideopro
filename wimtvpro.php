@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.5
+Version: 2.0.6
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -42,18 +42,18 @@ function wimtvpro_install() {
   	global $wpdb;
 	wimtvpro_create_metadata_table($table_name);
   
-  // Create page MyWimTv Streaming
-  $my_streaming_page = array(
-    'post_title'    => 'My WimTv Streaming',
-    'post_content'  => '',
-    'post_status'   => 'publish',
-    'post_author'   => 1,
-    'post_type'   => 'page',
-    'post_name' => 'my_streaming_wimtv',
-  );
-
-  // Insert the post into the database
-  wp_insert_post($my_streaming_page);
+	  // Create page MyWimTv Streaming
+	  $my_streaming_page = array(
+	    'post_title'    => 'My WimTv Streaming',
+	    'post_content'  => '',
+	    'post_status'   => 'future',
+	    'post_author'   => 1,
+	    'post_type'   => 'page',
+	    'post_name' => 'my_streaming_wimtv',
+	  );
+	
+	  // Insert the post into the database
+	  wp_insert_post($my_streaming_page);
   
   //$embeddedLive = wimtvpro_elencoLive("video", "0") . "<br/>UPCOMING EVENT<br/>" . wimtvpro_elencoLive("list", "0");
   
@@ -73,7 +73,7 @@ function wimtvpro_install() {
 			},
 		});
     });</script>',
-    'post_status'   => 'publish',
+    'post_status'   => 'private',
     'post_author'   => 1,
     'post_type'   => 'page',
     'post_name' => 'wimlive_wimtv',
@@ -126,7 +126,8 @@ function wimtvpro_setting() {
   add_option( 'wp_date','');
   add_option( 'wp_email','');
   add_option( 'wp_social','si');
-  add_option( 'wp_sandbox','No'); 
+  add_option( 'wp_sandbox','No');
+  add_option( 'wp_publicPage','No'); 
 } 
 add_action( 'admin_init', 'wimtvpro_setting');
 
@@ -165,12 +166,9 @@ function wimtvpro_remove() {
   delete_option( 'wp_date');
   delete_option( 'wp_email');
   delete_option( 'wp_social');
+  delete_option( 'wp_publicPage');
   
   $wpdb->query("DELETE FROM " .  $wpdb->posts . " WHERE post_name LIKE '%my_streaming_wimtv%' OR post_name LIKE '%wimlive_wimtv%'");
-
-
-
-  
 }
 
 
@@ -245,12 +243,15 @@ function wimtvpro_menu(){
     $user = wp_get_current_user();
     //For Admin
     if ($user->roles[0] == "administrator"){
-      add_menu_page('Configuration', 'WimTvPro', 'administrator', 'WimVideo', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
-      add_submenu_page('WimVideo', 'My Media', 'My Media', 'administrator', 'WimVideoPro_MyMedia', 'wimtvpro_mymedia');
-      add_submenu_page('WimVideo', 'My Streaming', 'My Streaming', 'administrator', 'WimVideoPro_MyStreaming', 'wimtvpro_mystreaming');
-      add_submenu_page('WimVideo', 'Upload Video', 'Upload Video', 'administrator', 'WimVideoPro_UploadVideo', 'wimtvpro_upload');
-      add_submenu_page('WimVideo', 'Wim Live', 'Wim Live', 'administrator', 'WimVideoPro_WimLive', 'wimtvpro_live');
-      add_submenu_page('WimVideo', 'Report', 'Report', 'administrator', 'WimVideoPro_Report', 'wimtvpro_Report');
+      add_menu_page('WimTvPromENU', 'WimTvPro', 'administrator', 'WimTvPro', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
+
+      add_submenu_page('WimTvPro', 'Configuration', 'Configuration', 'administrator', 'WimTvPro', 'wimtvpro_configure');
+      add_submenu_page('WimTvPro', 'My Media', 'My Media', 'administrator', 'WimVideoPro_MyMedia', 'wimtvpro_mymedia');
+      add_submenu_page('WimTvPro', 'My Streaming', 'My Streaming', 'administrator', 'WimVideoPro_MyStreaming', 'wimtvpro_mystreaming');
+      add_submenu_page('WimTvPro', 'Upload Video', 'Upload Video', 'administrator', 'WimVideoPro_UploadVideo', 'wimtvpro_upload');
+      add_submenu_page('WimTvPro', 'Wim Live', 'Wim Live', 'administrator', 'WimVideoPro_WimLive', 'wimtvpro_live');
+      add_submenu_page('WimTvPro', 'Report', 'Report', 'administrator', 'WimVideoPro_Report', 'wimtvpro_Report');
+            
     }
     
     if ($user->roles[0]=="author") {
@@ -259,9 +260,6 @@ function wimtvpro_menu(){
     if ($user->roles[0]=="editor") {
       add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
-    
-    
-    
 }
 add_action('admin_menu', 'wimtvpro_menu');
 // END menu admin

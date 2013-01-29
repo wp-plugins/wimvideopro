@@ -9,6 +9,7 @@ function wimtvpro_mymedia (){
     });}); </script>';
 
    	echo " <div class='wrap'><h2>My Media</h2>";
+   	echo "<p>Here are stored all video uploaded. If you want to publish on your site one of these videos, move it in My Streaming</p>";
    	$title = "<div class='action'><span class='icon_sync0' title='Syncronize'>Syncronize</span></div>";
 	$getThumbs = $title . "<ul class='items' id='FALSE'>" . wimtvpro_getThumbs(FALSE) . "</ul>"; 
 	echo $getThumbs;
@@ -73,6 +74,7 @@ function wimtvpro_mystreaming(){
     </script>';
 
    	echo "<div class='wrap'><h2>My Streaming</h2>";
+   	echo "<p>Here you can manage the videos you want to publish on the web pages, both in posts and widgets</p>";
    	$title = "<div id='poststuff'><div class='action'>
    	<span class='icon_sync0' title='Syncronize'>Syncronize</span>";
    	$user = wp_get_current_user();
@@ -96,6 +98,7 @@ function wimtvpro_mystreaming(){
             <div class="meta-box-sortables">
                 <div class="postbox" id="first">
                     <h3><span>PlayList</span></h3>
+                    <p>Create a playlist of videos to be<br/>inserted within your website</p>
                     <div class="inside">';
     
 	//Count playlist saved in DB
@@ -112,7 +115,7 @@ function wimtvpro_mystreaming(){
     	    $arrayVideo = explode(",", $listVideo);
     	    if ($listVideo=="") $countVideo = 0;
     	    else $countVideo = count($arrayVideo);
-      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new->id . '"><span class="icon_selectPlay"></span><input class="title" type="text" value="' . $record_new->name .  '"/>(<span class="counter">' . $countVideo . '</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span>';
+      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new->id . '"><span class="icon_selectPlay"></span><input class="title" type="text" value="' . $record_new->name .  '"/>(<span class="counter">' . $countVideo . '</span>)<!--span class="icon_deletePlay"></span--><span class="icon_modTitlePlay"></span>';
       		echo '<span class="icon_viewPlay"></span>';
       		echo '</div>';
     		$count +=1;
@@ -288,7 +291,10 @@ function wimtvpro_upload(){
 
       <p class='description' id='addCategories'></p>
       <input type="hidden" name="wimtvpro_upload" value="Y" />
-      <?php submit_button(); ?>
+      <?php submit_button("Upload"); 
+      echo "Do not leave this page until the file upload is not terminated";
+      ?>
+      
     </form>
 
 <?php
@@ -302,10 +308,11 @@ function wimtvpro_live(){
   $url_live =  get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
   $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
 
-  
+   
 
   switch ($_GET['namefunction']) {
-     case "addLive":
+  
+         case "addLive":
      
        $noneElenco = TRUE;
        //aggiungere script per pickdata e pickhour
@@ -389,6 +396,9 @@ function wimtvpro_live(){
     echo " <div class='wrap'><h2>Wim Live";
    	echo " <a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=addLive' class='add-new-h2'>" . __( 'Add' ) . " " . __( 'Live' ) . "</a> ";
     echo "</h2>";
+    echo "<p>Here you can create live streaming events to be published on the pages of the site.<br/>To use this service you must have installed on your pc a video encoding software (e.g.  Adobe Flash Media Live Encoder, Wirecast etc.)</p>";
+  
+
     echo "<table class='wp-list-table widefat fixed pages'>";
     echo "<thead><tr><th>Name</th><th>Pay-Per-View</th><th>URL</th><th>Streaming</th><th>Embed Code</th><th></th></tr></thead>";
     echo "<tbody>";
@@ -415,6 +425,9 @@ function wimtvpro_live(){
      echo "<div class='wrap'><h2>Wim Live";
    	 echo "<a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=listLive' class='add-new-h2'>" . __( 'Return' ) . " " . __( 'Live' ) . "</a> ";
 	 echo "</h2>";
+	 echo "<p>Here you can create live streaming events to be published on the pages of the site.<br/>To use this service you must have installed on your pc a video encoding software (e.g.  Adobe Flash Media Live Encoder, Wirecast etc.)</p>";
+  
+
 	 ?>
 	 <form action="#" method="post" id="wimtvpro-wimlive-form" accept-charset="UTF-8">
 	 
@@ -470,6 +483,10 @@ function wimtvpro_live(){
 
 
 function wimtvpro_report (){
+  global $user,$wpdb;
+  
+  
+   $table_name = $wpdb->prefix . 'wimtvpro_video';
 	
 	if (get_option("wp_sandbox")=="No")
 		$baseReport = "http://www.wim.tv:3131/api/";
@@ -522,18 +539,20 @@ function wimtvpro_report (){
 
     echo '<table class="wp-list-table widefat fixed posts">
       <tr>
-        <th class="manage-column column-title">Video Url</th>
+        <th class="manage-column column-title"></th>
     	<th class="manage-column column-title">Views</th>
     	<th class="manage-column column-title">Activate view</th>
     	<th class="manage-column column-title">Max viewers</th>
       </tr>
     ';
 	foreach ($arrayStream as $value){
-		
+		$arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $value->contentId . "'");
+		$thumbs = $arrayPlay[0]->urlThumbs;
+		$video = $thumbs . "<br/>" . $value->title;
 				
 		echo "
 		 <tr class='alternate'>
-		  <td>" .  $value->id . "</td>
+		  <td class='image'>" .  $video . "</td>
 		  <td>" .  $value->views . "</td>
 		  <td>" . $value->viewers . "</td>
 		  <td>" .  $value->max_viewers . "</td>
@@ -542,9 +561,6 @@ function wimtvpro_report (){
 	}
 	echo "</table>";
 
-	
-	
-	echo "<h3>Views (current month)</h3>";
 	
 	$urlView = $baseReport . "users/" . get_option("wp_userWimtv") . "/views"; 	
    	$ch = curl_init();
@@ -556,43 +572,48 @@ function wimtvpro_report (){
     $response = curl_exec($ch);
    	curl_close($ch);
     $arrayView = json_decode($response);
-    echo '<table class="wp-list-table widefat fixed posts">
-      <tr>
-        <th class="manage-column column-title">End Time</th>
-    	<th class="manage-column column-title">Duration</th>
-    	<th class="manage-column column-title">Traffic</th>
-    	<th class="manage-column column-title">Video URL</th>
-      </tr>
-    ';
     
-	foreach ($arrayView as $value){
-		
-		//Pari alternate
-		$urlViewSingle = $baseReport . "views/" . $value; 	
-		$ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $urlViewSingle);
-	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-	    $responseSingle = curl_exec($ch);
-	    $arrayresponseSingle = json_decode($responseSingle);
-
-	   	curl_close($ch);
-		$traffic = $arrayresponseSingle->traffic;
-		$traffic =  round($traffic / $megabyte, 2) . " MB";
-		
-		echo "
-		 <tr class='alternate'>
-		  <td>" . $arrayresponseSingle->human_end_time . "</td>
-		  <td>" .  $arrayresponseSingle->duration . "s</td>
-		  <td>" . $traffic . "</td>
-		  <td>" .  $value . "</td>
-		 </tr>";
+    if (count($arrayView)>1) {	
 	
+	echo "<h3>Views (current month)</h3>";
+   
+	    echo '<table class="wp-list-table widefat fixed posts">
+	      <tr>
+	        <th class="manage-column column-title">End Time</th>
+	    	<th class="manage-column column-title">Duration</th>
+	    	<th class="manage-column column-title">Traffic</th>
+	    	<th class="manage-column column-title">Video URL</th>
+	      </tr>
+	    ';
+	    
+		foreach ($arrayView as $value){
+			
+			//Pari alternate
+			$urlViewSingle = $baseReport . "views/" . $value;
+			$ch = curl_init();
+		    curl_setopt($ch, CURLOPT_URL, $urlViewSingle);
+		    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+		    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		    $responseSingle = curl_exec($ch);
+		    $arrayresponseSingle = json_decode($responseSingle);
+	
+		   	curl_close($ch);
+			$traffic = $arrayresponseSingle->traffic;
+			$traffic =  round($traffic / $megabyte, 2) . " MB";
+			
+			echo "
+			 <tr class='alternate'>
+			  <td>" . $arrayresponseSingle->human_end_time . "</td>
+			  <td>" .  $arrayresponseSingle->duration . "s</td>
+			  <td>" . $traffic . "</td>
+			  <td>" .  $value . "</td>
+			 </tr>";
+		
+		}
+		echo "</table>";
 	}
-	echo "</table>";
-	
    	
    	echo "</div>";
 

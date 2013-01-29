@@ -284,4 +284,7 @@ div.empty {
 	background: transparent url('../images/remove.png') no-repeat center center; width:20px; height:20px;display:block; float:right; cursor:pointer;
 }
 
+table td.image img{
+	width:200px; height:120px;
+}
 

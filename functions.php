@@ -60,7 +60,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $array =  explode (",",$stateView[1]);
   $typeUser["U"] = array();
   $typeUser["R"] = array();
- 
+  $viewPublicVideo = FALSE;
   foreach ($array as $key=>$value) {
   	$var = explode ("-",$value);
   	if ($var[0]=="U") {
@@ -72,6 +72,12 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   	else
   		$typeUser[$var[0]] = "";
 
+    if (($var[0]=="All") || ($var[0]=="")) {
+    
+    	$viewPublicVideo = TRUE;
+    
+    }
+   
   }
 
   $user = wp_get_current_user();
@@ -79,7 +85,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $userRole = $user->roles[0];
   //Video is visible only a user
 
-  if (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser))){
+  if ((!$private && $viewPublicVideo) || ( ($private) && (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser))))){
   
    if ((!isset($replace_video)) || ($replace_video == "")) {
     $param_thumb = get_option("wp_basePathWimtv") . str_replace(get_option("wp_replaceContentWimtv"), $content_item_new, get_option("wp_urlThumbsWimtv"));
@@ -176,7 +182,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
     if ($user->roles[0] == "administrator"){
       $my_media .= "<span class='icon_RemoveshowtimeInto' title='Remove to My Streaming' id='" . $showtime_identifier . "'></span>";
       $my_media .= "<span class='icon_moveThumbs' title='Change Position'></span>";
-      $my_media .= "<span class='icon_viewVideo' rel='" . $view_video_state . "' title='View Thumb in page and/or block'></span>";
+      $my_media .= "<span class='icon_viewVideo' rel='" . $view_video_state . "' title='Video Privacy'></span>";
       $my_media .= "<span class='icon_playlist' rel='" . $showtime_identifier . "' title='Add to Playlist selected'></span>";
     }
    }
@@ -452,16 +458,29 @@ if (isset($_POST["wimtvpro_live"])) {
 }
 
 function update_page_mystreaming(){
+  if (get_option("wp_publicPage")=="Yes"){
 	  global $user,$wpdb;  
 	  $post_id  = $wpdb->get_var("SELECT max(ID) FROM $wpdb->posts WHERE post_name LIKE 'my_streaming_wimtv%'");
       $my_streaming_wimtv= array();
       $my_streaming_wimtv['ID'] = $post_id;
       $my_streaming_wimtv['post_content'] = "<ul class='itemsPublic'>" . wimtvpro_getThumbs(TRUE, FALSE, FALSE, "page") . "</ul>";
       wp_update_post($my_streaming_wimtv);
+      
+      if (get_option("wp_publicPage")=="Yes"){
+	    change_post_status($post_id,'publish');
+      } else {
+        change_post_status($post_id,'private');
+      }
 
+      
+  }
 
 }
-
+function change_post_status($post_id,$status){
+    $current_post = get_post( $post_id, 'ARRAY_A' );
+    $current_post['post_status'] = $status;
+    wp_update_post($current_post);
+}
 function wimtvpro_checkCleanUrl($base, $url) {
   return plugins_url($base . "/" . $url, __FILE__);
 }

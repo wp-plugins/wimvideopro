@@ -67,7 +67,22 @@ jQuery(document).ready(function(){
 						}
 			}).responseText;
 
-				text  = '<b>Where should see the video?</b>';
+								
+				text  = '<b>Who should see the video?</b><br/>';
+				
+				text += '<select onChange="viewWho(this);" id="users" multiple="multiple" style="height:100px;width:270px">';
+				text += '<option value="All">Everybody</option>';
+				text += '<option value="No">Nobody (only administrator)</option>';
+				text += '<optgroup label="Users" id="optUsers">';
+				text += users;
+				text += '</optgroup>';
+				text += '<optgroup label="Roles" id="optRoles">';
+				text += roles;
+				text += '</optgroup>';
+				text += '</select>';
+				text += '<br/><p class="description">(Multiselect with CTRL) You are selected <br/><strong id="AddUser"></strong>  <strong id="AddRole"></strong></p>';
+				
+				text  += '<b>Where should see the video for public user? (If you are selected Everyone)</b>';
 				
 				text += '<p class="viewThumbs';
 				if (stateView[0]=="0") text += " selected";
@@ -81,21 +96,9 @@ jQuery(document).ready(function(){
 				text += '<p class="viewThumbs';
 				if (stateView[0]=="3") text += " selected";
 				text += '" id="3">Into widget and page</p>';
-				
-				text  += '<b>Who should see the video?</b><br/>';
-				
-				text += '<select onChange="viewWho(this);" id="users" multiple="multiple" style="height:150px;width:270px">';
-				text += '<option value="All">Everybody</option>';
-				text += '<optgroup label="Users" id="optUsers">';
-				text += users;
-				text += '</optgroup>';
-				text += '<optgroup label="Roles" id="optRoles">';
-				text += roles;
-				text += '</optgroup>';
-				text += '<option value="No">Nobody</option>';
-				text += '</select>';
-				text += '<br/><p class="description">(Multiselect with CTRL) You are selected <br/><strong id="AddUser"></strong><br/><strong id="AddRole"></strong></p>';
 				text += '<div class="action"><span class="form_save">Save</span><span class="icon_sync2" style="display:none;">Loading...</span></div>';
+				text += '<br/><br/>';
+				text += '&nbsp;&nbsp;&nbsp;';
 				
 				return text;
 			},
@@ -139,7 +142,8 @@ jQuery(document).ready(function(){
 							jQuery(".form_save").hide();		   
 						},
 						success: function(response) {
-							jQuery.colorbox.close();	
+							jQuery.colorbox.close();
+							alert ("Change State view successfully");
 							element.parent().parent().children(".icon").children("span").attr("rel",state); 	
 						}
 					});
@@ -354,7 +358,7 @@ jQuery(document).ready(function(){
 				callRemoveVideo(jQuery(this));
 				});
 				jQuery('.icon_playlist').click(function() {    
-					callInsertIntoPlayList($(this));	   
+					callInsertIntoPlayList(jQuery(this));	   
 				});
 				callviewVideothumbs(jQuery(this));
 			},
@@ -483,8 +487,7 @@ function viewWho(obj){
       }
     }
     for (i=0; i<obj.options.length; i++) {
-    	if ((obj.options[i].selected) && (obj.options[i].parentNode.id != "optUsers") && (obj.options[i].parentNode.id != "optRoles")) {
-    		
+    	if ((obj.options[i].selected) && (obj.options[i].parentNode.id != "optUsers") && (obj.options[i].parentNode.id != "optRoles")) {   		
     	    jQuery("#AddUser").html(obj.options[i].text);
         	jQuery("#AddRole").html("");
         	jQuery(obj).children().children().removeAttr("selected");
@@ -649,7 +652,7 @@ jQuery(document).ready(function() {
 		  		var newRiga = '<div class="playlist new" id="playlist_' +  count  + '" rel=""><span class="icon_selectPlay" style="visibility:hidden"></span><input type="text" value="Playlist ' +  count  + '" /><span class="icon_createPlay"></span></div>';
 		  		jQuery(this).parent().parent().append(newRiga);
 		  		jQuery(this).parent().removeClass("new");
-		  		jQuery(this).parent().append('(<span class="counter">0</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span><span class="icon_viewPlay"></span>');
+		  		jQuery(this).parent().append('(<span class="counter">0</span>)<!--span class="icon_deletePlay"></span--><span class="icon_modTitlePlay"></span><span class="icon_viewPlay"></span>');
 		  		jQuery(this).parent().children("input").addClass("title");
 		  		jQuery(this).parent().attr("rel",response);
 		  		jQuery(this).parent().children(".icon_selectPlay").attr("style","");

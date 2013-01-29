@@ -64,6 +64,7 @@ function wimtvpro_configure(){
           	update_option( 'wp_basePathWimtv','https://www.wim.tv/wimtv-webapp/rest/');
           } else {
           	update_option( 'wp_basePathWimtv','http://peer.wim.tv:8080/wimtv-webapp/rest/');
+
           }
           update_option('wp_sandbox', $_POST['sandbox']);
           update_option( 'wp_urlVideosWimtv','videos');
@@ -80,6 +81,8 @@ function wimtvpro_configure(){
           update_option( 'wp_replaceUserWimtv','{username}'); 
           update_option( 'wp_replaceacquiredIdentifier','{acquiredIdentifier}');
           update_option( 'wp_replaceshowtimeIdentifier','{showtimeIdentifier}'); 
+          update_option( 'wp_publicPage', $_POST['publicPage']);
+          update_page_mystreaming();
 
           echo '<div class="updated"><p><strong>';
           _e('Options saved.' );
@@ -115,28 +118,22 @@ function wimtvpro_configure(){
 
 ?>
   <div class="wrap">
-         <h2>WimTv Configuration</h2>
+         <h2>WimTvPro Configuration</h2>
         <form enctype="multipart/form-data" action="#" method="post" id="configwimtvpro-group" accept-charset="UTF-8">
             <div>
                <?php if (get_option("wp_sandbox")=="No") { ?>
-               <h4><?php _e("If you haven't yet done, <a id='sandbox' href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>www.wim.tv</strong>" ); ?></h4>
+               <h4><?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>www.wim.tv</strong>" ); ?></h4>
                <?php } else { ?>
-               <h4><?php _e("If you haven't yet done, <a id='sandbox' href='http://peer.wim.tv:8080/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>peer.wim.tv</strong>" ); ?></h4>
+               <h4><?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://peer.wim.tv:8080/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>peer.wim.tv</strong>" ); ?></h4>
                <?php } ?>
 
-              	<p><label for="edit-userwimtv">Username Wimtv <span class="form-required" title="">*</span>
+              	<p><label for="edit-userwimtv">Username WimTV <span class="form-required" title="">*</span>
 				<input type="text" id="edit-userwimtv" name="userWimtv" value="<?php echo get_option("wp_userwimtv");?>" size="100" maxlength="200"/></p>
 				
-				<p><label for="edit-passwimtv">Password Wimtv <span class="form-required" title="">*</span></label>
+				<p><label for="edit-passwimtv">Password WimTV <span class="form-required" title="">*</span></label>
 				<input value="<?php echo get_option("wp_passwimtv");?>" type="password" id="edit-passwimtv" name="passWimtv" size="100" maxlength="200" class="form-text required" /></p>
 				
-				<p><label for="edit-sandbox">Sandbox mode (test)</label>
-				<select id="edit-sandbox" name="sandbox" class="form-select">
-					<option value="No" <?php if (get_option("wp_sandbox")=="No") echo "selected='selected'" ?>>No</option>
-					<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
-				</select>
-				</p>
-
+				
 				
 				<h4><?php _e("Upload and/or choose your skin player into <a target='new' href='http://www.longtailvideo.com/addons/skins'>page Jwplayer</a> for your videos" ); ?></h4>
 				<p><label for="edit-nameskin">Name Skin</label>
@@ -155,6 +152,21 @@ function wimtvpro_configure(){
 				<input type="text" id="edit-heightpreview" name="heightPreview" value="<?php echo get_option("wp_heightPreview");?>" size="100" maxlength="200" class="form-text" /></p>
 				<p><label for="edit-widthpreview">Width (default: 500) </label>
 				<input type="text" id="edit-widthpreview" name="widthPreview" value="<?php echo get_option("wp_widthPreview");?>" size="100" maxlength="200" class="form-text" /></p>
+				
+				<p><label for="edit-sandbox">Please select "no" to use the plugin on the WimTV server. Select "yes" to try the service only on test server</label>
+				<select id="edit-sandbox" name="sandbox" class="form-select">
+					<option value="No" <?php if (get_option("wp_sandbox")=="No") echo "selected='selected'" ?>>No</option>
+					<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
+				</select>
+				</p>
+
+				<p><label for="edit-publicPage">Would you added a public MyStreaming Page?</label>
+				<select id="edit-publicPage" name="publicPage" class="form-select">
+					<option value="No" <?php if (get_option("wp_publicPage")=="No") echo "selected='selected'" ?>>No</option>
+					<option value="Yes" <?php if (get_option("wp_publicPage")=="Yes") echo "selected='selected'" ?>>Yes (add a page My WimTv Streaming)</option>
+				</select>
+				</p>
+
 				
 				<input type="hidden" name="wimtvpro_update" value="Y" />
 				<?php submit_button(); ?>
