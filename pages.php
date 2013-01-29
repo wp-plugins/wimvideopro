@@ -115,7 +115,7 @@ function wimtvpro_mystreaming(){
     	    $arrayVideo = explode(",", $listVideo);
     	    if ($listVideo=="") $countVideo = 0;
     	    else $countVideo = count($arrayVideo);
-      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new->id . '"><span class="icon_selectPlay"></span><input class="title" type="text" value="' . $record_new->name .  '"/>(<span class="counter">' . $countVideo . '</span>)<!--span class="icon_deletePlay"></span--><span class="icon_modTitlePlay"></span>';
+      		echo '<div class="playlist" id="playlist_' . $count . '" rel="' . $record_new->id . '"><span class="icon_selectPlay"></span><input class="title" type="text" value="' . $record_new->name .  '"/>(<span class="counter">' . $countVideo . '</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span>';
       		echo '<span class="icon_viewPlay"></span>';
       		echo '</div>';
     		$count +=1;

@@ -128,7 +128,10 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
      $my_media .= "<div class='thumb ui-state-default'>";
    else 
      $my_media .= "<div class='thumbPublic'>";
-                 $my_media .= "<span title='" . __("Remove") . "' class='icon_remove' " . $id . " ></span>";
+   
+   if ($state!="showtime") 
+     $my_media .= "<span title='" . __("Remove") . "' class='icon_remove' " . $id . " ></span>";
+   
    if ($private) {
      $my_media .= "<div class='headerBox'><div class='icon'>";
    

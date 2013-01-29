@@ -652,7 +652,7 @@ jQuery(document).ready(function() {
 		  		var newRiga = '<div class="playlist new" id="playlist_' +  count  + '" rel=""><span class="icon_selectPlay" style="visibility:hidden"></span><input type="text" value="Playlist ' +  count  + '" /><span class="icon_createPlay"></span></div>';
 		  		jQuery(this).parent().parent().append(newRiga);
 		  		jQuery(this).parent().removeClass("new");
-		  		jQuery(this).parent().append('(<span class="counter">0</span>)<!--span class="icon_deletePlay"></span--><span class="icon_modTitlePlay"></span><span class="icon_viewPlay"></span>');
+		  		jQuery(this).parent().append('(<span class="counter">0</span>)<span class="icon_deletePlay"></span><span class="icon_modTitlePlay"></span><span class="icon_viewPlay"></span>');
 		  		jQuery(this).parent().children("input").addClass("title");
 		  		jQuery(this).parent().attr("rel",response);
 		  		jQuery(this).parent().children(".icon_selectPlay").attr("style","");
