@@ -255,10 +255,10 @@ function wimtvpro_menu(){
     }
     
     if ($user->roles[0]=="author") {
-      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
+      add_menu_page('WimTvPromENU', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
     if ($user->roles[0]=="editor") {
-      add_menu_page('My Streaming', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
+      add_menu_page('My Streaming', 'Streaming Wimtv', 'editor', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
 }
 add_action('admin_menu', 'wimtvpro_menu');
