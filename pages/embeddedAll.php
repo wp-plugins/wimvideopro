@@ -9,13 +9,12 @@
     $arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $contentItem . "'");
 
     if (get_option('wp_nameSkin')!="") {
-     $uploads_info = wp_upload_dir();
-        $directory =  $uploads_info["baseurl"] .  "/skinWim";
-
-      $skin = "&skin=" . $directory  . "/" . get_option('wp_nameSkin') . ".zip";
+	   	$uploads_info = wp_upload_dir();
+		$directory =  $uploads_info["baseurl"] .  "/skinWim";
+	    $skin = "&skin=" . $directory  . "/" . get_option('wp_nameSkin') . ".zip";
     }
     else
-      $skin = "";
+    	$skin = "";
 
     
 

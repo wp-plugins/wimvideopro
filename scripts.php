@@ -203,6 +203,7 @@
 	  die();
     break;
     case "getIFrameVideo":
+    /*
       if (get_option('wp_nameSkin')!="") {
         $uploads_info = wp_upload_dir();
         $directory =  $uploads_info["baseurl"] .  "/skinWim";
@@ -222,7 +223,11 @@
       curl_setopt($ch, CURLOPT_USERPWD, $credential);
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       $response = curl_exec($ch);
-      echo $response;
+      */
+      $shortcode = "[streamingWimtv id='" . $id . "' width='" . $_GET['WFrame'] . "' height='" .  $_GET['HFrame'] . "' ]";
+      echo $shortcode; 
+      
+      //echo $response;
        
       
     break;
@@ -259,9 +264,9 @@
     break;
     
     case "getUsers":
-    
-      $sqlVideos = mysql_query("SELECT viewVideoModule FROM " . $table_name  . " WHERE contentidentifier = '" .  $id . "'");
-      $stateView = explode ("|",mysql_fetch_array($sqlVideos));
+      $sqlVideos = $wpdb->get_results("SELECT viewVideoModule FROM " . $table_name  . " WHERE contentidentifier = '" .  $id . "'");
+      //$sqlVideos = mysql_query("SELECT viewVideoModule FROM " . $table_name  . " WHERE contentidentifier = '" .  $id . "'");
+      $stateView = explode ("|",$sqlVideos[0]->viewVideoModule);
       $arrayUsers = explode (",",$stateView[1]);
     
       $q_users = mysql_query("SELECT ID,user_login FROM " . $wpdb->prefix . "users");
@@ -277,8 +282,8 @@
     break;
     
     case "getRoles":
-      $sqlVideos = mysql_query("SELECT viewVideoModule FROM " . $table_name  . " WHERE contentidentifier = '" .  $id . "'");
-      $stateView = explode ("|",mysql_fetch_array($sqlVideos));
+      $sqlVideos = $wpdb->get_results("SELECT viewVideoModule FROM " . $table_name  . " WHERE contentidentifier = '" .  $id . "'");
+      $stateView = explode ("|",$sqlVideos[0]->viewVideoModule);
       $arrayRoles = explode (",",$stateView[1]);
     
       global $wp_roles;

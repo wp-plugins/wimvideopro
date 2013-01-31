@@ -3,13 +3,13 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.0.6
+Version: 2.0.7
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
 */
 
-/*  Copyright 2012  wimlabs  (email : riccardo@cedeo.net)
+/*  Copyright 2013  wimlabs  (email : riccardo@cedeo.net)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -31,7 +31,7 @@ include ("hooks.php");
 include ("functions.php");
 include ("pages.php");
 
-
+add_shortcode( 'streamingWimtv', 'wimtvpro_shortcode' );
 /* What to do when the plugin is activated? */
 register_activation_hook(__FILE__,'wimtvpro_install');
 /* What to do when the plugin is deactivated? */
@@ -267,7 +267,7 @@ add_action('admin_menu', 'wimtvpro_menu');
 
 // Attach video into post
 function wimtvpro_media_menu($tabs) {
-  $newtab = array('wimtvpro' => __('My Wimtv video', 'wimtvpro_insert'));
+  $newtab = array('wimtvpro' => __('My Streaming and Playlist', 'wimtvpro_insert'));
   return array_merge($tabs, $newtab);
   
   //VEDERE http://axcoto.com/blog/article/307
@@ -434,4 +434,78 @@ function my_register_widgets2() {
 add_action( 'widgets_init', 'my_register_widgets' );
 add_action( 'widgets_init', 'my_register_widgets2' );
 //End Widget
+
+//ShortCode player
+// [bartag foo="foo-value"]
+function wimtvpro_shortcode($atts) {
+
+	global $wpdb,$user;
+	$table_name = $wpdb->prefix . 'wimtvpro_video';
+	$user = wp_get_current_user();
+  	$idUser = $user->ID;
+  	$userRole = $user->roles[0];
+	
+	extract( shortcode_atts( array('id'=>$id,'width'=>$width,'height'=>$height), $atts ) );
+	
+	$arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $id . "'");
+
+	$view_video_state = $arrayPlay[0]->viewVideoModule;
+	$stateView = explode ("|",$view_video_state);
+	
+	$array =  explode (",",$stateView[1]);
+	$typeUser["U"] = array();
+	$typeUser["R"] = array();
+	$viewPublicVideo = FALSE;
+	foreach ($array as $key=>$value) {
+		$var = explode ("-",$value);
+		if ($var[0]=="U") {
+			array_push($typeUser["U"], $var[1]);
+		}
+		elseif ($var[0]=="R") {
+			array_push($typeUser["R"], $var[1]);
+		}
+		else
+			$typeUser[$var[0]] = "";
+		if (($var[0]=="All") || ($var[0]=="")) {
+			$viewPublicVideo = TRUE;
+		}	
+	}
+	
+	
+  	//Check if user is authorized to see video
+  
+  	if ((($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser)))){
+  
+
+		extract( shortcode_atts( array('id'=>$id,'width'=>$width,'height'=>$height), $atts ) );
+		$credential = get_option("wp_userwimtv") . ":" . get_option("wp_passwimtv");
+
+		if (get_option('wp_nameSkin')!="") {
+	        $uploads_info = wp_upload_dir();
+	        $directory =  $uploads_info["baseurl"] .  "/skinWim";
+	
+	        $skin = "&skin=" . $directory  . "/" . get_option('wp_nameSkin') . ".zip";      
+	      }
+	      else
+	        $skin = "";
+
+	      $url = get_option("wp_basePathWimtv") . get_option("wp_urlVideosWimtv") . "/" . $id . '/embeddedPlayers';
+	      $url .= "?get=1&width=" . $width . "&height=" . $height . $skin;
+
+	      $ch = curl_init();
+	      curl_setopt($ch, CURLOPT_URL,  $url);
+	      curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	      curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	      curl_setopt($ch, CURLOPT_USERPWD, $credential);
+	      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	      $response = curl_exec($ch);
+		  
+		  return $response;
+	} else {
+		
+		return "<p>You don't have permission to see the video</p>";
+	
+	}  
+}
 

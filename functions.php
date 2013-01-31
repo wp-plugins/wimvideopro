@@ -85,7 +85,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $userRole = $user->roles[0];
   //Video is visible only a user
 
-  if ((!$private && $viewPublicVideo) || ( ($private) && (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser))))){
+  if ((!$private && $viewPublicVideo) || (($userRole=="administrator") || (in_array($idUser,$typeUser["U"])) || (in_array($userRole,$typeUser["R"])) || (array_key_exists("All",$typeUser)) || (array_key_exists ("",$typeUser)))){
   
    if ((!isset($replace_video)) || ($replace_video == "")) {
     $param_thumb = get_option("wp_basePathWimtv") . str_replace(get_option("wp_replaceContentWimtv"), $content_item_new, get_option("wp_urlThumbsWimtv"));
