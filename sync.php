@@ -4,8 +4,11 @@
   * Syncronize the video with wim.tv.
   *
   */
+  if (!isset($upload))
+  	include("../../../wp-blog-header.php");
+  else
+    include("../wp-blog-header.php");
   global $user,$wpdb;
-  include("../../../wp-blog-header.php");
   $url_video = get_option("wp_basePathWimtv") . get_option("wp_urlVideosDetailWimtv");
   $credential = get_option("wp_userwimtv") . ":" . get_option("wp_passwimtv");
   $table_name = $wpdb->prefix . 'wimtvpro_video';
@@ -117,6 +120,8 @@
 	            " status = '" . $status . "'," . 
 	            " title = '" . $title . "'," .             
 	            " urlThumbs = '" . $url_thumbs . "'," .
+	            " urlPlay = '" . $urlVideo . "'," .
+	            " duration = '" . $duration . "'," .
 	            " showtimeidentifier = '" . $showtime_identifier . "'," .
 	            " category = '" . $categories . "'" .
 	            " WHERE contentidentifier = '"  . $content_item . "' ";
@@ -148,4 +153,6 @@
     echo t("Non ci sono elementi");
   }
 }
-die();
+
+if (!isset($upload))
+  die();

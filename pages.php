@@ -222,13 +222,17 @@ function wimtvpro_upload(){
             	  'status' => 'OWNED',
             	  'acquiredIdentifier' => '',
             	  'urlThumbs' => '',
+            	  'urlPlay' => '',
             	  'category' =>  '',
             	  'title' => $titlefile ,
             	  'duration' => '',
             	  'showtimeidentifier' => ''
             	 )
            	  );
-           } 
+           	  $upload = TRUE;
+              include("sync.php");
+ 		   }
+          
            else{
              $error ++;
              echo '<div class="error"><p><strong>';

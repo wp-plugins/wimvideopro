@@ -8,17 +8,7 @@
 
     $arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $contentItem . "'");
 
-    if (get_option('wp_nameSkin')!="") {
-	   	$uploads_info = wp_upload_dir();
-		$directory =  $uploads_info["baseurl"] .  "/skinWim";
-	    $skin = "&skin=" . $directory  . "/" . get_option('wp_nameSkin') . ".zip";
-    }
-    else
-    	$skin = "";
-
-    
-
-	echo "<div style='text-align:center;height:" . $height . "px;width:" . $width . "px;'>";
+	echo "<div style='text-align:center;'>";
 	echo "<div id='container'></div>";
 	
 	$dimensions = "width: '" . get_option("wp_widthPreview") . "', height: '" . get_option("wp_heightPreview") . "',";
@@ -30,10 +20,7 @@
  	     file: '" . $arrayPlay[0]->urlPlay . "',
          image: '" . $arrayPlay[0]->urlThumbs . "',
  	});</script>&nbsp;";
-	
 
-
-    
     $output .= "<h3>" . $arrayPlay[0]->title . " (Preview)</h3>";
     $output .= "<p>Duration: <b>" . $arrayPlay[0]->duration . "</b>";
     if (count($arrayPlay[0]->categories)>0){
