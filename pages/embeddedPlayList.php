@@ -25,11 +25,11 @@
 			echo "<div style='text-align:center;height:" . $height . "px;width:" . $width . "px;'><h3>" . $title . "</h3>";
 			$playlistSize = "250px";
 			$dimensions = "width: '" . $widthP . "', height: '" . get_option("wp_heightPreview") . "',";
-			echo "<div id='container' style='margin:0;padding:0 10px;'></div>";
+			echo "<div id='container-" . $idPlayList . "' style='margin:0;padding:0 10px;'></div>";
 	} else {
 		$playlistSize = "30%";
 		$dimensions = "width: '100%',";
-		echo "<div id='container' style='width: 10px; height: 10px; background-color: #c7cc63;'></div>";
+		echo "<div id='container-" . $idPlayList . "' style='width: 10px; height: 10px; background-color: #c7cc63;'></div>";
 	
 	}
 	
@@ -39,7 +39,7 @@
 	$channel = $sxe->channel;
 	$playlist = "";
 	foreach ($channel->item as $items) {
-	  $playlist .= "{'file':'" . $items->file . "','image':'" . $items->image . "','title':'" . $items->title . "'},";
+	  $playlist .= "{'file':'" . $items->file . "','image':'" . $items->image . "','title':'" . urlencode($items->title) . "'},";
 	  //echo $items->title . " ";
 	}
 	$playlist = substr($playlist , 0, -1);
@@ -70,7 +70,7 @@
 		
 		//For jwplayer 5
 		$dirJwPlayer = plugin_dir_url(dirname(__FILE__)) . "script/jwplayer/player.swf"; 
-		echo "<script type='text/javascript'>jwplayer('container').setup({";
+		echo "<script type='text/javascript'>jwplayer('container-" . $idPlayList . "').setup({";
        if (get_option('wp_nameSkin')!="") echo "skin: '" . $directory . "/" . get_option('wp_nameSkin') . ".zip',";
  		echo $dimensions . "'flashplayer':'" .  $dirJwPlayer . "','playlist': [" .  $playlist . "],'playlist.position': 'right',	'playlist.size': '" . $playlistSize  . "'});</script>&nbsp;";
 
