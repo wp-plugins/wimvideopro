@@ -459,6 +459,12 @@ function wimtvpro_live(){
      	Public <input type="radio" name="Public" value="true" checked="checked"/> |
      	Private <input type="radio" name="Public" value="false"/>
      </p>
+     
+     	 <p> <label for="edit-url">Record event*</label><br/>
+     	I want to record <input type="radio" name="Record" value="true" checked="checked"/> |
+     	I don't want to record <input type="radio" name="Record" value="false"/>
+     </p>
+
 
 
      <p><label for="edit-giorno">Data *</label>
@@ -473,6 +479,7 @@ function wimtvpro_live(){
      <input class="pickaduration" type="text" id="edit-duration" name="Duration" value="<?php echo $durata;?>" size="10" maxlength="10">
      <div class="description">Event duration.</div>
      <input type="hidden" name="wimtvpro_live" value="Y" />
+     
      <?php submit_button(); ?>
 
   </form>
