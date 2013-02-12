@@ -193,7 +193,7 @@ function wimtvpro_upload(){
             //add category/ies (if exist)
             $category_tmp = array();
             $subcategory_tmp = array();
-            $post= array("file" => "@" . $unique_temp_filename,"title" => $titlefile,"description" => $descriptionfile);
+            $post= array("file" => "@" . $unique_temp_filename,"title" => $titlefile,"description" => $descriptionfile, "filename" => $_FILES['videoFile']['name']);
             if (isset($video_category)) {
               $id=0;
               foreach ($video_category as $cat) {
@@ -459,6 +459,12 @@ function wimtvpro_live(){
      	Public <input type="radio" name="Public" value="true" checked="checked"/> |
      	Private <input type="radio" name="Public" value="false"/>
      </p>
+     
+     	 <p> <label for="edit-url">Record event*</label><br/>
+     	I want to record <input type="radio" name="Record" value="true" checked="checked"/> |
+     	I don't want to record <input type="radio" name="Record" value="false"/>
+     </p>
+
 
 
      <p><label for="edit-giorno">Data *</label>
@@ -473,6 +479,7 @@ function wimtvpro_live(){
      <input class="pickaduration" type="text" id="edit-duration" name="Duration" value="<?php echo $durata;?>" size="10" maxlength="10">
      <div class="description">Event duration.</div>
      <input type="hidden" name="wimtvpro_live" value="Y" />
+     
      <?php submit_button(); ?>
 
   </form>
@@ -519,14 +526,19 @@ function wimtvpro_report (){
 	
 	$traffic_json = json_decode($response);
 	$traffic = $traffic_json->traffic;
+	$storage = $traffic_json->storage;
 	if ($traffic!="") {
 		$byteToMb = round($traffic/ $megabyte, 2) . ' MB';
-		echo "<p>Used <b>" . $byteToMb . "</b> so far.</p>";
+		$byteToMbS = round($storage/ $megabyte, 2) . ' MB';
+		echo "<p>Traffic: Used <b>" . $byteToMb . "</b> so far.</p>";
+		echo "<p>Storage space: <b>" . $byteToMbS . "</b></p>";
 	} else {
 		echo "You account don't generate traffic in this month.";
 		echo "</div>";
 		exit();
 	}
+	
+	
 	
 	echo "<h3>Streams (current month)</h3>";
 

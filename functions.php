@@ -424,9 +424,14 @@ if (isset($_POST["wimtvpro_live"])) {
     if ($_POST['Public']!="") {
     	$public = $_POST['Public'];
     }
+    
+    if ($_POST['Record']!="") {
+    	$record = $_POST['Record'];
+    }
+
     $userpeer = get_option("wp_userWimtv");
     $fields_string = "name=" . $name . "&url=" . $url . "&eventDate=" . $giorno . "&paymentMode=" . $typemode;
-    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public;
+    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public . "&recordEvent=" . $record;
     $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
     $url_live = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
     if ($function=="modify")  $url_live .= "/" . $_GET['id'];
