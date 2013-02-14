@@ -431,7 +431,10 @@ if (isset($_POST["wimtvpro_live"])) {
 
     $userpeer = get_option("wp_userWimtv");
     $fields_string = "name=" . $name . "&url=" . $url . "&eventDate=" . $giorno . "&paymentMode=" . $typemode;
-    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public . "&recordEvent=" . $record;
+    $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public;
+    
+    //$fields_string .= "&recordEvent=" . $record;
+    
     $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
     $url_live = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
     if ($function=="modify")  $url_live .= "/" . $_GET['id'];
@@ -460,7 +463,7 @@ if (isset($_POST["wimtvpro_live"])) {
           if ($value->message!="")
             $formset_error .= $value->field . "=" . $value->message;
         }
-        echo '<div class="error"><p><strong>API wimtvpro error: ' . $formset_error . '</strong></p></div>';
+        echo '<div class="error"><p><strong>API wimtvpro error: ' . $formset_error . '</strong></p>' . $result  . '</div>';
       }
   }
 }

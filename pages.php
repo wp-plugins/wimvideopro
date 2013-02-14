@@ -140,7 +140,7 @@ function wimtvpro_mystreaming(){
 
 //Page for view for UPLOAD new Video  
 function wimtvpro_upload(){
-
+     
     if ($_POST['wimtvpro_upload']=="Y") {
     
     	$uploads_info = wp_upload_dir();
@@ -182,18 +182,27 @@ function wimtvpro_upload(){
         	//connect at API for upload video to wimtv
             $ch = curl_init();
             $url_upload = get_option("wp_basePathWimtv") . 'videos';
+            //$url_upload = "http://192.168.31.200:8082/wimtv-webapp/rest/videos";
+            //$credential = "albi:12345678";
             curl_setopt($ch, CURLOPT_URL, $url_upload);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
-            curl_setopt($ch, CURLOPT_VERBOSE, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($ch, CURLOPT_USERPWD, $credential);
             curl_setopt($ch, CURLOPT_POST, TRUE);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             //add category/ies (if exist)
             $category_tmp = array();
             $subcategory_tmp = array();
-            $post= array("file" => "@" . $unique_temp_filename,"title" => $titlefile,"description" => $descriptionfile, "filename" => $_FILES['videoFile']['name']);
+            
+            $post= array("file" => "@" . $unique_temp_filename,"title" => $titlefile,"description" => $descriptionfile);
+             /*$post= array(
+                'file' => array(CURLFORM_FILENAME => $_FILES['videoFile']['name'], CURLFORM_FILE
+=> $unique_temp_filename),
+           
+            	"title" => $titlefile,
+            	"description" => $descriptionfile
+            );*/
             if (isset($video_category)) {
               $id=0;
               foreach ($video_category as $cat) {
@@ -251,14 +260,16 @@ function wimtvpro_upload(){
 
 	echo "<div class='wrap'><h2>Upload Video</h2>";
 	$category="";
+	
+	
 	$url_categories = get_option("wp_basePathWimtv") . "videoCategories";
-
+	
 	$ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url_categories);
 
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-      curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
      
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
@@ -276,6 +287,8 @@ function wimtvpro_upload(){
       }
     }
     curl_close($ch);
+    
+   
 ?>
 
     <form enctype="multipart/form-data" action="#" method="post" id="wimtvpro-upload" accept-charset="UTF-8"><div><div class="form-item form-type-textfield form-item-titlefile">
@@ -459,8 +472,8 @@ function wimtvpro_live(){
      	Public <input type="radio" name="Public" value="true" checked="checked"/> |
      	Private <input type="radio" name="Public" value="false"/>
      </p>
-     
-     	 <p> <label for="edit-url">Record event*</label><br/>
+     	
+     	 <p> <label for="edit-url">Record event (temporaly not active)</label><br/>
      	I want to record <input type="radio" name="Record" value="true" checked="checked"/> |
      	I don't want to record <input type="radio" name="Record" value="false"/>
      </p>
