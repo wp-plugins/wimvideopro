@@ -6,7 +6,19 @@ function wimtvpro_mymedia (){
     jQuery("a.viewThumb").click( function(){
     var url = jQuery(this).attr("id");
     jQuery(this).colorbox({href:url});
-    });}); </script>';
+    });
+    
+    jQuery("a.wimtv-thumbnail").click( function(){
+    if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
+		var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
+		jQuery(this).colorbox({href:url});
+	}
+    });
+    
+    }); 
+    
+    
+    </script>';
 
    	echo " <div class='wrap'><h2>My Media</h2>";
    	echo "<p>Here are stored all video uploaded. If you want to publish on your site one of these videos, move it in My Streaming</p>";
@@ -69,6 +81,12 @@ function wimtvpro_mystreaming(){
         var url = jQuery(this).attr("id");
         jQuery(this).colorbox({href:url});
        });
+       jQuery("a.wimtv-thumbnail").click( function(){
+      if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
+		var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
+		jQuery(this).colorbox({href:url});
+	  }
+
      }); 
     
     </script>';
@@ -130,8 +148,10 @@ function wimtvpro_mystreaming(){
     </div>
                 
             </div>
+            <div class="clear"></div>
         </div>
-    </div>';
+        <div class="clear"></div>
+    </div><div class="clear"></div>';
 	
 	echo "</div>";
 
@@ -219,6 +239,7 @@ function wimtvpro_upload(){
             if (isset($arrayjsonst->contentIdentifier)) {
               echo '<div class="updated"><p><strong>';
               _e("Upload successfully.");
+              unlink($unique_temp_filename);
               echo  '</strong></p></div>';
               $wpdb->insert( $table_name, 
             	array (
@@ -377,6 +398,7 @@ function wimtvpro_live(){
        $ore = floor($tempo / 60);
        $minuti = $tempo % 60;
        $durata = $ore . "h" . $minuti;
+ 
     break;
      
     case "deleteLive":
@@ -414,7 +436,7 @@ function wimtvpro_live(){
    	echo " <a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=addLive' class='add-new-h2'>" . __( 'Add' ) . " " . __( 'Live' ) . "</a> ";
     echo "</h2>";
     echo "<p>Here you can create live streaming events to be published on the pages of the site.<br/>To use this service you must have installed on your pc a video encoding software (e.g.  Adobe Flash Media Live Encoder, Wirecast etc.)</p>";
-  
+  	echo "<p><b>REMEMBER: for use this functionality you need to enable \"Live Transmission\" on your personal page</b></p>";
 
     echo "<table class='wp-list-table widefat fixed pages'>";
     echo "<thead><tr><th>Name</th><th>Pay-Per-View</th><th>URL</th><th>Streaming</th><th>Embed Code</th><th></th></tr></thead>";
@@ -443,7 +465,7 @@ function wimtvpro_live(){
    	 echo "<a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=listLive' class='add-new-h2'>" . __( 'Return' ) . " " . __( 'Live' ) . "</a> ";
 	 echo "</h2>";
 	 echo "<p>Here you can create live streaming events to be published on the pages of the site.<br/>To use this service you must have installed on your pc a video encoding software (e.g.  Adobe Flash Media Live Encoder, Wirecast etc.)</p>";
-  
+  	  echo "<p>REMEMBER: for use this functionality you need to enable \"Live Transmission\" on your personal page on wim.tv</p>";
 
 	 ?>
 	 <form action="#" method="post" id="wimtvpro-wimlive-form" accept-charset="UTF-8">
@@ -473,7 +495,7 @@ function wimtvpro_live(){
      	Private <input type="radio" name="Public" value="false"/>
      </p>
      	
-     	 <p> <label for="edit-url">Record event (temporaly not active)</label><br/>
+     	 <p> <label for="edit-record">Record event</label><br/>
      	I want to record <input type="radio" name="Record" value="true" checked="checked"/> |
      	I don't want to record <input type="radio" name="Record" value="false"/>
      </p>
@@ -508,8 +530,8 @@ function wimtvpro_live(){
 
 function wimtvpro_report (){
   global $user,$wpdb;
-  
-  
+
+   
    $table_name = $wpdb->prefix . 'wimtvpro_video';
 	
 	if (get_option("wp_sandbox")=="No")
@@ -517,136 +539,347 @@ function wimtvpro_report (){
 	else
 		$baseReport = "http://peer.wim.tv:3131/api/";
 	$megabyte = 1024*1024;
+	
+	
+	
+	if ((isset($_POST['from'])) && (isset($_POST['to'])) && (trim($_POST['from'])!="") && (trim($_POST['to'])!="")) {
+		$from = $_POST['from'];
+		$to = $_POST['to'];
+		//convert to  (YYYY-MM-DD)
+		$current_month=FALSE;
+		list($day_from, $month_from, $year_from) = explode('/',$from);
+		//$from_tm = mktime(0, 0, 0, $month, $day, $year);
+		list($day_to, $month_to, $year_to) = explode('/',$to);
+		//$to_tm = mktime(0, 0, 0,  $month, $day, $year);
+		
+		$from_tm = strtotime( $year_from . "-" . $month_from . "-" . $day_from . " 00:00:00.00")*1000;
+		$to_tm = strtotime( $year_to . "-" . $month_to . "-" . $day_to . " 00:00:00.00")*1000;
+		
+		$from_dmy =$month_from . "/" . $day_from . "/" . $year_from;
+		$to_dmy= $month_to . "/" . $day_to . "/" . $year_to;
 
-   	echo "<div class='wrap'><h2>Report user Wimtv " . get_option("wp_userWimtv") . "</h2>";
-   	//INFORMATION USERS http://www.wim.tv:3131/api/users/CAMPTV
-   	$urlInfoUser = $baseReport . "users/" . get_option("wp_userWimtv"); 	
+	} else {
+		$current_month=TRUE;
+		
+		$d = new DateTime(date('m/d/y'));
+		
+    	$d->modify('first day of this month');
+		$from_dmy = $d->format('m/d/y');
+		
+		$d->modify('last day of this month');
+		$to_dmy = $d->format('m/d/y');
+
+	}
+
+    if ($current_month==TRUE){
+    
+    	$url_view  = $baseReport . "users/" . get_option("wp_userWimtv") . "/views";
+    	$title_views = "Views (current month)";
+    	
+    	$url_stream = $baseReport . "users/" . get_option("wp_userWimtv") . "/streams"; 	
+    	$title_streams = "Streams (current month)";
+    	$url_view_single = $baseReport . "views/@";
+
+    	
+    	$url_info_user = $baseReport . "users/" . get_option("wp_userWimtv"); 
+    	$title_user = "Current Month  <a href='#' id='customReport'>Change Date</a> ";
+    	$style_date = "display:none;";
+    	$url_packet = $baseReport . "users/" . get_option("wp_userWimtv") . "/commercialPacket/usage";
+    	
+    } else {
+    
+    	$url_view = $baseReport . "users/" . get_option("wp_userWimtv") . "/views_by_time?from=" . $from_tm . "&to=" . $to_tm;
+    	$title_views = "Views (from " . $from . " to " . $to . ")";
+    	
+    	$url_stream = $baseReport . "users/" . get_option("wp_userWimtv") . "/streams?from=" . $from_tm . "&to=" . $to_tm ;	
+    	$title_streams = "Streams (from " . $from . " to " . $to . ")";
+    	$url_view_single = $baseReport . "views/@?from=" . $from_tm . "&to=" . $to_tm ;
+    	
+    	$url_info_user = $baseReport . "users/" . get_option("wp_userWimtv") . "?from=" . $from_tm . "&to=" . $to_tm . "&format=json";
+    	
+		$title_user = "<a href='?page=WimVideoPro_Report'>Current Month</a> Change Date";
+		
+		
+
+    }
+    
+   	echo "<div class='wrap'><h1>Report user Wimtv " . get_option("wp_userWimtv") . "</h1>";
+	
+	    
+    echo ' 
+        <script type="text/javascript">
+  		jQuery(document).ready(function(){
+  		  jQuery( ".pickadate" ).datepicker({
+            dateFormat: "dd/mm/yy",     maxDate: 0,      });
+  		  jQuery("#customReport").click(function(){
+			jQuery("#fr_custom_date").fadeToggle();
+			jQuery("#changeTitle").html("<a href=\'?page=WimVideoPro_Report\'>Current Month</a> Change Date");
+		  });
+		  
+		  jQuery(".tabs span").click(function(){
+		    var idSpan = jQuery(this).attr("id");
+		    jQuery(".view").fadeOut();
+		  	jQuery("#view_" + idSpan).fadeIn();
+		  	jQuery(".tabs span").attr("class","");
+		  	jQuery(this).attr("class","active");
+		  });
+		  
+  		});
+  		</script>
+     ';
+
+	
+	echo "<h3 id='changeTitle'>" . $title_user . "</h3>";
+	
+	echo '<div class="registration" id="fr_custom_date" style="' . $style_date . '">
+	
+		<form method="post">
+			<fieldset>From <input  type="text" class="pickadate" id="edit-from" name="from" value="' . $from . '" size="10" maxlength="10"> 
+			To <input  type="text" class="pickadate" id="edit-to" name="to" value="' . $to . '" size="10" maxlength="10">
+			<input type="submit" value=">" class="button button-primary" /></fieldset>
+		</form>
+	
+	</div>';
+
+	
    	$ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $urlInfoUser);
+    curl_setopt($ch, CURLOPT_URL, $url_info_user);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     $response = curl_exec($ch);
    	curl_close($ch);
-   	/*
-   	Json
-	  'username': The username, as a string
-	  'traffic': Total outbound traffic generated in bytes, as a string
-	}	
-	Used ### MB so far.
-	*/
 	
 	$traffic_json = json_decode($response);
 	$traffic = $traffic_json->traffic;
 	$storage = $traffic_json->storage;
-	if ($traffic!="") {
-		$byteToMb = round($traffic/ $megabyte, 2) . ' MB';
-		$byteToMbS = round($storage/ $megabyte, 2) . ' MB';
-		echo "<p>Traffic: Used <b>" . $byteToMb . "</b> so far.</p>";
-		echo "<p>Storage space: <b>" . $byteToMbS . "</b></p>";
+	
+	
+	if (isset($url_packet)) {
+	
+		$ch2 = curl_init();
+	    curl_setopt($ch2, CURLOPT_URL, $url_packet);
+	    curl_setopt($ch2, CURLOPT_VERBOSE, 0);
+	    curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, FALSE);
+	    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch2, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	    $response2 = curl_exec($ch2);
+	   	curl_close($ch2);
+		
+		$commercialPacket_json = json_decode($response2);
+		$currentPacket = $commercialPacket_json->current_packet;
+		if (($currentPacket->id)>0) $namePacket =  $currentPacket->name;
+		else $namePacket =  $currentPacket->error;
+		echo "<p>Commercial Packet: <b>" . $namePacket . "</b></p> ";
+
+		$traffic_of = " of " . $currentPacket->band_human;
+		$storage_of = " of " . $currentPacket->storage_human;
+		
+		$traffic_bar = "<div class='progress'><div class='bar' style='width:" . $commercialPacket_json->traffic->percent . "%'>" . $commercialPacket_json->traffic->percent_human . "%</div></div>";
+		$storage_bar = "<div class='progress'><div class='bar' style='width:" . $commercialPacket_json->storage->percent . "%'>" . $commercialPacket_json->storage->percent_human . "%</div></div>";
+		
+		$byteToMb = "<b>" . $commercialPacket_json->traffic->current_human . '</b>' . $traffic_of . $traffic_bar;
+		$byteToMbS = "<b>" . $commercialPacket_json->storage->current_human . '</b>' . $storage_of . $storage_bar;
+	
 	} else {
-		echo "You account don't generate traffic in this month.";
-		echo "</div>";
-		exit();
+	
+		$byteToMb = "<b>" . round($traffic/ $megabyte, 2) . ' MB</b>';
+		$byteToMbS = "<b>" . round($storage/ $megabyte, 2) . ' MB</b>';
+
+	
 	}
 	
-	
-	
-	echo "<h3>Streams (current month)</h3>";
+	//$commercialPacket = $traffic_json->commercialPacket;
+	if ($traffic=="") {
+		echo "<p>You account don't generate traffic in this period.</p>";
+	} else {
+		echo "<p>Traffic: " . $byteToMb . "</p>";
+		echo "<p>Storage space: " . $byteToMbS . "</p>";
 
-	$urlStream = $baseReport . "users/" . get_option("wp_userWimtv") . "/streams"; 	
-   	$ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $urlStream );
-    curl_setopt($ch, CURLOPT_VERBOSE, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    $response = curl_exec($ch);
-   	curl_close($ch);
-    $arrayStream = json_decode($response);
-
-    echo '<table class="wp-list-table widefat fixed posts">
-      <tr>
-        <th class="manage-column column-title"></th>
-    	<th class="manage-column column-title">Views</th>
-    	<th class="manage-column column-title">Activate view</th>
-    	<th class="manage-column column-title">Max viewers</th>
-      </tr>
-    ';
-	foreach ($arrayStream as $value){
-		$arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $value->contentId . "'");
-		$thumbs = $arrayPlay[0]->urlThumbs;
-		$video = $thumbs . "<br/>" . $value->title;
-				
-		echo "
-		 <tr class='alternate'>
-		  <td class='image'>" .  $video . "</td>
-		  <td>" .  $value->views . "</td>
-		  <td>" . $value->viewers . "</td>
-		  <td>" .  $value->max_viewers . "</td>
-		 </tr>";
+		
+		
+		
+	   	$ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $url_stream);
+	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	    $response = curl_exec($ch);
+	   	curl_close($ch);
+	    $arrayStream = json_decode($response);
 	
-	}
-	echo "</table>";
-
-	
-	$urlView = $baseReport . "users/" . get_option("wp_userWimtv") . "/views"; 	
-   	$ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $urlView);
-    curl_setopt($ch, CURLOPT_VERBOSE, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-    $response = curl_exec($ch);
-   	curl_close($ch);
-    $arrayView = json_decode($response);
-    
-    if (count($arrayView)>1) {	
-	
-	echo "<h3>Views (current month)</h3>";
-   
-	    echo '<table class="wp-list-table widefat fixed posts">
+	    echo '
+	    <div class="summary"><div class="tabs">
+	    	<span id="stream" class="active">View Streams</span><span id="graph">View graph</span>
+	    </div>
+	    <div id="view_stream" class="view"><table class="wp-list-table widefat fixed posts" style="text-align:center;">
+	     <h3>' . $title_streams . '</h3>
 	      <tr>
-	        <th class="manage-column column-title">End Time</th>
-	    	<th class="manage-column column-title">Duration</th>
-	    	<th class="manage-column column-title">Traffic</th>
-	    	<th class="manage-column column-title">Video URL</th>
+	        <th class="manage-column column-title">Video</th>
+	    	<th class="manage-column column-title">Views</th>
+	    	<th class="manage-column column-title">Activate view</th>
+	    	<th class="manage-column column-title">Max viewers</th>
 	      </tr>
 	    ';
 	    
-		foreach ($arrayView as $value){
+	    $dateNumber = array();
+	    $dateTraffic = array();
+		foreach ($arrayStream as $value){
+			$arrayPlay = $wpdb->get_results("SELECT * FROM {$table_name} WHERE contentidentifier='" . $value->contentId . "'");
+			$thumbs = $arrayPlay[0]->urlThumbs;
+			if ((isset($value->title))) $video = $thumbs . "<br/><b>" . $value->title . "</b><br/>" . $value->type ;
+			else $video = $thumbs . "<br/>" . $value->id;
 			
-			//Pari alternate
-			$urlViewSingle = $baseReport . "views/" . $value;
-			$ch = curl_init();
-		    curl_setopt($ch, CURLOPT_URL, $urlViewSingle);
-		    curl_setopt($ch, CURLOPT_VERBOSE, 0);
-		    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		    $responseSingle = curl_exec($ch);
-		    $arrayresponseSingle = json_decode($responseSingle);
-	
-		   	curl_close($ch);
-			$traffic = $arrayresponseSingle->traffic;
-			$traffic =  round($traffic / $megabyte, 2) . " MB";
-			
+			$html_view_exp = "<b>Total " . $value->views . " Views</b><br/>";
+			$view_exp = $value->views_expanded;
+			if (count($view_exp)>0) {
+				$html_view_exp .= "<table class='wp-list-table'>
+				<tr>
+			        <th class='manage-column column-title' style='font-size:10px;'>End Time</th>
+			    	<th class='manage-column column-title' style='font-size:10px;'>Duration</th>
+			    	<th class='manage-column column-title' style='font-size:10px;'>Traffic</th>
+			    </tr>
+				";
+				foreach ($view_exp as $value_exp){
+					$value_exp->traffic =  round($value_exp->traffic / $megabyte, 2) . " MB";
+					$date_human =  date('d/m/Y', ($value_exp->end_time/1000));
+					$html_view_exp .= "<tr>";
+					$html_view_exp .= "<td style='font-size:10px;'>" . $date_human . "</td>";
+					$html_view_exp .= "<td style='font-size:10px;'>" . $value_exp->duration . "s</td>";
+					$html_view_exp .= "<td style='font-size:10px;'>" . $value_exp->traffic  . "</td>";
+					$html_view_exp .= "</tr>";
+					
+					if (isset($dateNumber[$date_human])) $dateNumber[$date_human] = $dateNumber[$date_human] + 1;
+					else $dateNumber[$date_human] = 1;
+					
+					if (isset($dateTraffic[$date_human])) array_push($dateTraffic[$date_human], $value_exp->traffic);
+					else $dateTraffic[$date_human] = array($value_exp->traffic);
+
+					
+				}
+				$html_view_exp .= "</table>";
+			} else
+			{
+			  $html_view_exp .= "";
+			}
 			echo "
 			 <tr class='alternate'>
-			  <td>" . $arrayresponseSingle->human_end_time . "</td>
-			  <td>" .  $arrayresponseSingle->duration . "s</td>
-			  <td>" . $traffic . "</td>
-			  <td>" .  $value . "</td>
+			  <td class='image'>" .  $video . "</td>
+			  <td>" .  $html_view_exp . "</td>
+			  <td>" . $value->viewers . "</td>
+			  <td>" .  $value->max_viewers . "</td>
 			 </tr>";
 		
 		}
-		echo "</table>";
-	}
-   	
+		echo "</table><div class='clear'></div></div>";
+		
+		
+		echo "<div id='view_graph' class='view'>";
+		$dateRange = getDateRange($from_dmy, $to_dmy);
+		$count_date = count($dateRange);
+		$count_single= 0;
+		$traffic_single = 0;
+		echo "<div class='cols'>";
+		
+		$number_view_max = max($dateNumber);
+		$single_percent = (100/$number_view_max);
+		
+		$single_taffic_media = array();
+		foreach ($dateTraffic as $dateFormat => $traffic_number){
+			$single_taffic_media[$dateFormat] = round(array_sum($dateTraffic[$dateFormat]) / count($dateTraffic[$dateFormat]),2);
+		}
+		$traffic_view_max = max($single_taffic_media);
+		$single_traffic_percent = (100/$traffic_view_max);
+
+		echo "<div class='col'><div class='date'>Date</div><div class='title'>Total view</div><div class='title'>Average Traffic</div></div>";
+		for ($i=0;$i<$count_date;$i++){
+		    if (isset($dateNumber[$dateRange[$i]])) $count_single = $single_percent * $dateNumber[$dateRange[$i]];
+		    if (isset($single_taffic_media[$dateRange[$i]])) $traffic_single = $single_traffic_percent * $single_taffic_media[$dateRange[$i]];		    
+		    
+		 	echo "<div class='col' >
+					<div class='date'>" . $dateRange[$i] . "</div>
+					<div class='countview'><div class='bar' style='width:" . $count_single . "%'>";
+			if ($dateNumber[$dateRange[$i]]>1) echo $dateNumber[$dateRange[$i]] . " viewers";
+			if ($dateNumber[$dateRange[$i]]==1) echo $dateNumber[$dateRange[$i]] . " viewer";
+			echo "</div></div>
+					<div class='countview'><div class='barTraffic' style='width:" . $traffic_single . "%'>";
+			if ($single_taffic_media[$dateRange[$i]]>0) echo $single_taffic_media[$dateRange[$i]] . " MB";
+			echo "</div></div>
+					</div>";
+			$count_single = 0;
+			$traffic_single = 0;
+		}
+		
+		echo "</div>";
+		//print_r($dateRange);	
+		echo "<div class='clear'></div></div><div class='clear'></div></div>";
+	/*
+	   	$ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $url_view);
+	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	    $response = curl_exec($ch);
+	
+	   	curl_close($ch);
+	    $arrayView = json_decode($response);
+	    
+	    if (count($arrayView)>1) {	
+		
+		/*echo "<h3>" . $title_views . "</h3>";
+	   
+		    echo '<table class="wp-list-table widefat fixed posts">
+		      <tr>
+		        <th class="manage-column column-title">End Time</th>
+		    	<th class="manage-column column-title">Duration</th>
+		    	<th class="manage-column column-title">Traffic</th>
+		    	<th class="manage-column column-title">Stream name</th>
+		      </tr>
+		    ';*/
+		    /*			foreach ($arrayView as $value){
+				
+				//Pari alternate
+				$url_view_single2 = str_replace("@",$value,$url_view_single);
+				
+				$ch = curl_init();
+			    curl_setopt($ch, CURLOPT_URL, $url_view_single2);
+			    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+			    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+			    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			    $responseSingle = curl_exec($ch);
+			    $arrayresponseSingle = json_decode($responseSingle);
+			    
+			   	curl_close($ch);
+				
+				echo $arrayresponseSingle->end_time;
+				
+				$traffic = $arrayresponseSingle->traffic;
+				$traffic =  round($traffic / $megabyte, 2) . " MB";
+				$title = $arrayresponseSingle->title;
+				if ($title==false)
+					$title = $arrayresponseSingle->video_url;
+				/*echo "
+				 <tr class='alternate'>
+				  <td>" . $arrayresponseSingle->human_end_time . "</td>
+				  <td>" .  $arrayresponseSingle->duration . "s</td>
+				  <td>" . $traffic . "</td>
+				  <td>" .  $title . "</td>
+				 </tr>";*/
+			/*
+			}
+			echo "</table>";
+		}*/
+   		
+   	}
    	echo "</div>";
 
 }
+
+
 
 
 ?>

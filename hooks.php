@@ -1,9 +1,76 @@
 <?php
 function wimtvpro_configure(){
-
+	
+	
     $uploads_info = wp_upload_dir();
     $directory = $uploads_info["basedir"] .  "/skinWim";
+    $styleReg = "display:none";
+    
+    if ($_POST['wimtvpro_registration'] == 'Y'){
+    
+   		$error = 0;
+		
+		if ($_POST['reg_RepeatPassword']!=$_POST['reg_Password']){
+			$error ++;
+			$testoErrore .= "Password isn't same<br/>";
+			$_POST['reg_RepeatPassword'] = "";
+			$_POST['reg_Password'] = "";
+		}		
+		if (($error==0) && ($_POST['reg_name']!="") && ($_POST['reg_Surname']!="") && ($_POST['reg_Email']!="") && ($_POST['reg_Username']!="") && ($_POST['reg_Password']!="") && ($_POST['reg_RepeatPassword']!="")) {
+		
+			 $ch = curl_init();
+            $url_reg = get_option("wp_basePathWimtv") . 'register';
+            curl_setopt($ch, CURLOPT_URL, $url_reg);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: application/json","Accept: application/json"));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            
+            $post = '{"name":"' . $_POST['reg_name'] . '","surname":"' . $_POST['reg_Surname'] . '","email":"' . $_POST['reg_Email'] . '"';
+			$post .= ',"username":"' . $_POST['reg_Username'] . '","password":"' . $_POST['reg_Password'] . '"';
+			$post .= ',"role":"webtv","sex":"M","dateOfBirth":"01/01/1900"}';
 
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post); 
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $arrayjsonst = json_decode($response);
+            
+            if ($arrayjsonst->result=="SUCCESS") {
+              echo '<div class="updated"><p><strong>';
+              _e("Registration successfully.");
+              echo  '</strong></p></div>';
+             update_option('wp_userwimtv', $_POST['reg_Username']);
+          	update_option('wp_passwimtv', $_POST['reg_Password']);
+
+            } else {
+            
+            	foreach ($arrayjsonst->messages as $message){
+            		$testoErrore .=  $message->field . " : " .  $message->message . "<br/>";         	
+            	}
+            	$error++;
+            
+            }
+
+
+		
+		} else {
+		
+			$error++;
+			 $testoErrore .= "You are not compiled all field required";
+		
+		}
+		
+		
+		if ($error>0) {
+			$styleReg = "display:block";
+			echo '<div class="error"><p><strong>' . $testoErrore . '</strong></p></div>';
+		
+		}
+		
+    
+    }
+    
     if($_POST['wimtvpro_update'] == 'Y') {  
         //Form data sent 
 
@@ -119,60 +186,102 @@ function wimtvpro_configure(){
 ?>
   <div class="wrap">
          <h2>WimTvPro Configuration</h2>
-        <form enctype="multipart/form-data" action="#" method="post" id="configwimtvpro-group" accept-charset="UTF-8">
+
             <div>
+               <h4>
                <?php if (get_option("wp_sandbox")=="No") { ?>
-               <h4><?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>www.wim.tv</strong>" ); ?></h4>
+               <?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://www.wim.tv/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>www.wim.tv</strong>" ); ?>
                <?php } else { ?>
-               <h4><?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://peer.wim.tv:8080/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>peer.wim.tv</strong>" ); ?></h4>
+               <?php _e("To use WimTVPro you must register as a web tv on WimTV. If you haven't yet done, <a id='sandbox' href='http://peer.wim.tv:8080/wimtv-webapp/userRegistration.do?execution=e1s1' target='_new'>sign up</a> at <strong id='site'>peer.wim.tv</strong>" ); ?>
                <?php } ?>
+				or <a href="#" class="box_register">register quickly</a>
+				
+				</h4>
+				
+				<div class="registration" style="<?php echo $styleReg;?>">
+				
+					<h4>Quick registration <a href="#" class="box_register">Close</a></h4> 
+				
+					<form enctype="multipart/form-data" action="#" method="post" id="configwimtvpro-group" accept-charset="UTF-8">
+					
+						<p><label for="edit-name">Name<span class="form-required" title="">*</span></label>
+						<input type="text" id="edit-name" name="reg_name" value="<?php echo $_POST['reg_name'];?>" size="40" maxlength="200"/>
+						<label for="edit-Surname">Surname<span class="form-required" title="">*</span></label>
+						<input type="text" id="edit-Surname" name="reg_Surname" value="<?php echo $_POST['reg_Surname'];?>" size="40" maxlength="200"/></p>
+						<p>
+						<label for="edit-Email">Email<span class="form-required" title="">*</span></label>
+						<input type="text" id="edit-Email" name="reg_Email" value="<?php echo $_POST['reg_Email'];?>" size="80" maxlength="200"/></p>
+						<p><label for="edit-name">Username<span class="form-required" title="">*</span></label>
+						<input type="text" id="edit-Username" name="reg_Username" value="<?php echo $_POST['reg_Username'];?>" size="30" maxlength="200"/>
+						<label for="edit-Password">Password<span class="form-required" title="">*</span></label>
+						<input type="password" id="edit-Password" name="reg_Password" value="<?php echo $_POST['reg_Password'];?>" size="30" maxlength="200"/>
+						<label for="edit-repPassword">Repeat Password<span class="form-required" title="">*</span></label>
+						<input type="password" id="edit-repPassword" name="reg_RepeatPassword" value="<?php echo $_POST['reg_RepeatPassword'];?>" size="30" maxlength="200"/></p>
 
-              	<p><label for="edit-userwimtv">Username WimTV <span class="form-required" title="">*</span>
-				<input type="text" id="edit-userwimtv" name="userWimtv" value="<?php echo get_option("wp_userwimtv");?>" size="100" maxlength="200"/></p>
-				
-				<p><label for="edit-passwimtv">Password WimTV <span class="form-required" title="">*</span></label>
-				<input value="<?php echo get_option("wp_passwimtv");?>" type="password" id="edit-passwimtv" name="passWimtv" size="100" maxlength="200" class="form-text required" /></p>
-				
-				
-				
-				<h4><?php _e("Upload and/or choose your skin player into <a target='new' href='http://www.longtailvideo.com/addons/skins'>page Jwplayer</a> for your videos" ); ?></h4>
-				<p><label for="edit-nameskin">Name Skin</label>
-				<select id="edit-nameskin" name="nameSkin" class="form-select"><?php echo $createSelect; ?></select></p>
-				
-				<p><label for="edit-uploadskin">Upload new skin player </label>
-				<input type="file" id="edit-uploadskin" name="files[uploadSkin]" size="100" class="form-file" /></p>
+						<input type="hidden" name="wimtvpro_registration" value="Y" />
+						<?php submit_button(__("Register")); ?>
 
-				<div class="description"><?php _e("Only zip. Save into a public URL " . $directory . "<br/>
-					For running the skin selected, copy the file <a href='http://plugins.longtailvideo.com/crossdomain.xml' target='_new'>crossdomain.xml</a> to the root directory (e.g. http://www.mysite.it). You can do it all from your FTP program (e.g. FileZila, Classic FTP, etc).
-					So open up your FTP client program. First, identify your root directory. This is the folder titled or beginning with www -- and this is where you ultimately need to move that pesky crossdomain.xml. Now all you have to do is find it."); ?>
+					
+					</form>
+				
 				</div>
 				
-				<h4><?php _e("Dimensions of player for your videos" ); ?></h4>
-				<p><label for="edit-heightpreview">Height (default: 280) </label>
-				<input type="text" id="edit-heightpreview" name="heightPreview" value="<?php echo get_option("wp_heightPreview");?>" size="100" maxlength="200" class="form-text" /></p>
-				<p><label for="edit-widthpreview">Width (default: 500) </label>
-				<input type="text" id="edit-widthpreview" name="widthPreview" value="<?php echo get_option("wp_widthPreview");?>" size="100" maxlength="200" class="form-text" /></p>
-				
-				<p><label for="edit-sandbox">Please select "no" to use the plugin on the WimTV server. Select "yes" to try the service only on test server</label>
-				<select id="edit-sandbox" name="sandbox" class="form-select">
-					<option value="No" <?php if (get_option("wp_sandbox")=="No") echo "selected='selected'" ?>>No</option>
-					<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
-				</select>
-				</p>
-
-				<p><label for="edit-publicPage">Would you added a public MyStreaming Page?</label>
-				<select id="edit-publicPage" name="publicPage" class="form-select">
-					<option value="No" <?php if (get_option("wp_publicPage")=="No") echo "selected='selected'" ?>>No</option>
-					<option value="Yes" <?php if (get_option("wp_publicPage")=="Yes") echo "selected='selected'" ?>>Yes (add a page My WimTv Streaming)</option>
-				</select>
-				</p>
-
-				
-				<input type="hidden" name="wimtvpro_update" value="Y" />
-				<?php submit_button(); ?>
+				<form enctype="multipart/form-data" action="#" method="post" id="configwimtvpro-group" accept-charset="UTF-8">
+	              	<p><label for="edit-userwimtv">Username WimTV <span class="form-required" title="">*</span></label>
+					<input type="text" id="edit-userwimtv" name="userWimtv" value="<?php echo get_option("wp_userwimtv");?>" size="100" maxlength="200"/></p>
+					
+					<p><label for="edit-passwimtv">Password WimTV <span class="form-required" title="">*</span></label>
+					<input value="<?php echo get_option("wp_passwimtv");?>" type="password" id="edit-passwimtv" name="passWimtv" size="100" maxlength="200" class="form-text required" /></p>
+					
+					
+					
+					<h4><?php _e("Upload and/or choose your skin player into <a target='new' href='http://www.longtailvideo.com/addons/skins'>page Jwplayer</a> for your videos" ); ?></h4>
+					<p><label for="edit-nameskin">Name Skin</label>
+					<select id="edit-nameskin" name="nameSkin" class="form-select"><?php echo $createSelect; ?></select></p>
+					
+					<p><label for="edit-uploadskin">Upload new skin player </label>
+					<input type="file" id="edit-uploadskin" name="files[uploadSkin]" size="100" class="form-file" /></p>
+	
+					<div class="description"><?php _e("Only zip. Save into a public URL " . $directory . "<br/>
+						For running the skin selected, copy the file <a href='http://plugins.longtailvideo.com/crossdomain.xml' target='_new'>crossdomain.xml</a> to the root directory (e.g. http://www.mysite.it). You can do it all from your FTP program (e.g. FileZila, Classic FTP, etc).
+						So open up your FTP client program. First, identify your root directory. This is the folder titled or beginning with www -- and this is where you ultimately need to move that pesky crossdomain.xml. Now all you have to do is find it."); ?>
+					</div>
+					
+					<h4><?php _e("Dimensions of player for your videos" ); ?></h4>
+					<p><label for="edit-heightpreview">Height (default: 280) </label>
+					<input type="text" id="edit-heightpreview" name="heightPreview" value="<?php echo get_option("wp_heightPreview");?>" size="100" maxlength="200" class="form-text" /></p>
+					<p><label for="edit-widthpreview">Width (default: 500) </label>
+					<input type="text" id="edit-widthpreview" name="widthPreview" value="<?php echo get_option("wp_widthPreview");?>" size="100" maxlength="200" class="form-text" /></p>
+					
+					<p><label for="edit-sandbox">Please select "no" to use the plugin on the WimTV server. Select "yes" to try the service only on test server</label>
+					<select id="edit-sandbox" name="sandbox" class="form-select">
+						<option value="No" <?php if (get_option("wp_sandbox")=="No") echo "selected='selected'" ?>>No</option>
+						<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
+					</select>
+					</p>
+	
+					<p><label for="edit-publicPage">Would you added a public MyStreaming Page?</label>
+					<select id="edit-publicPage" name="publicPage" class="form-select">
+						<option value="No" <?php if (get_option("wp_publicPage")=="No") echo "selected='selected'" ?>>No</option>
+						<option value="Yes" <?php if (get_option("wp_publicPage")=="Yes") echo "selected='selected'" ?>>Yes (add a page My WimTv Streaming)</option>
+					</select>
+					</p>
+					<input type="hidden" name="wimtvpro_update" value="Y" />
+					<?php submit_button(); ?>
+				</form> 
 			</div>	
-		</form> 
+		
 	</div>
+	
+	<script>
+		
+		jQuery(".box_register").click(function(){
+			jQuery(".registration").fadeToggle();
+		});
+	
+	</script>
+
+	
 <?php
 }
 

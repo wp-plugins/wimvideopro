@@ -18,18 +18,19 @@
     $nameFile = "/playlist_" .  $idPlayList . ".xml";
         
      if (!isset($page))	{
-    		$height = get_option("wp_heightPreview") +70;
+    		$height = get_option("wp_heightPreview") +190;
 			$width = get_option("wp_widthPreview") +280;
 			$widthP = get_option("wp_widthPreview") +250; 	
 
 			echo "<div style='text-align:center;height:" . $height . "px;width:" . $width . "px;'><h3>" . $title . "</h3>";
-			$playlistSize = "250px";
-			$dimensions = "width: '" . $widthP . "', height: '" . get_option("wp_heightPreview") . "',";
-			echo "<div id='container-" . $idPlayList . "' style='margin:0;padding:0 10px;'></div>";
+			$playlistSize = "30%";
+			$dimensions = "width: '100%',";
+			$code = "<div id='container-" . $idPlayList . "' style='margin:0;padding:0 10px;'></div>";
+
 	} else {
 		$playlistSize = "30%";
 		$dimensions = "width: '100%',";
-		echo "<div id='container-" . $idPlayList . "' style='width: 10px; height: 10px; background-color: #c7cc63;'></div>";
+		$code = "<div id='container-" . $idPlayList . "' style='width: 10px; height: 10px; background-color: #c7cc63;'></div>";
 	
 	}
 	
@@ -39,7 +40,7 @@
 	$channel = $sxe->channel;
 	$playlist = "";
 	foreach ($channel->item as $items) {
-	  $playlist .= "{'file':'" . $items->file . "','image':'" . $items->image . "','title':'" . urlencode($items->title) . "'},";
+	  $playlist .= "{'file':'" . $items->file . "','image':'" . $items->image . "','title':'" . urlencode($items->title) . "','bufferlength':'0'},";
 	  //echo $items->title . " ";
 	}
 	$playlist = substr($playlist , 0, -1);
@@ -70,11 +71,17 @@
 		
 		//For jwplayer 5
 		$dirJwPlayer = plugin_dir_url(dirname(__FILE__)) . "script/jwplayer/player.swf"; 
-		echo "<script type='text/javascript'>jwplayer('container-" . $idPlayList . "').setup({";
-       if (get_option('wp_nameSkin')!="") echo "skin: '" . $directory . "/" . get_option('wp_nameSkin') . ".zip',";
- 		echo $dimensions . "'flashplayer':'" .  $dirJwPlayer . "','playlist': [" .  $playlist . "],'playlist.position': 'right',	'playlist.size': '" . $playlistSize  . "'});</script>&nbsp;";
+		$code .= "<script type='text/javascript'>jwplayer('container-" . $idPlayList . "').setup({";
+		$code .=  " modes: [{type: 'flash',src:'" . $dirJwPlayer . "' ,config:{ bufferlength: 0}}],";
+        if (get_option('wp_nameSkin')!="")  echo "skin: '" . $directory . "/" . get_option('wp_nameSkin') . ".zip',";
+ 		$code .= $dimensions . "'repeat':'single','bufferlength':'0','flashplayer':'" .  $dirJwPlayer . "','playlist': [" .  $playlist . "],'playlist.position': 'right',	'playlist.size': '" . $playlistSize  . "'});</script>&nbsp;";
+		
+		echo $code;
+		
 
-	if (!isset($page))	{	
+	if (!isset($page))	{
+		echo "<p>Embedded:</p><textarea style='resize: none; width:90%;height:70px;font-size:10px' readonly='readonly' onclick='this.focus(); this.select();'>" . htmlentities($code) . "</textarea>";
+
 		echo "</div>";
 	}
 

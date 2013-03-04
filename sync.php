@@ -104,10 +104,10 @@
 	            	'viewVideoModule' => '3',
 	            	'status' => $status,
 	            	'acquiredIdentifier' => $acquired_identifier,
-	            	'urlThumbs' => $url_thumbs,
+	            	'urlThumbs' => mysql_escape_string($url_thumbs),
 	            	'category' =>  $categories,
-	            	'urlPlay' =>  $urlVideo,
-	            	'title' => $title,
+	            	'urlPlay' =>  mysql_escape_string($urlVideo),
+	            	'title' =>  mysql_escape_string($title),
 	            	'duration' => $duration,
 	            	'showtimeidentifier' => $showtime_identifier
 	            	)
@@ -118,9 +118,9 @@
 	          	$query = "UPDATE " . $table_name . 
 	            " SET state = '" . $pos_wimtv . "'," . 
 	            " status = '" . $status . "'," . 
-	            " title = '" . $title . "'," .             
-	            " urlThumbs = '" . $url_thumbs . "'," .
-	            " urlPlay = '" . $urlVideo . "'," .
+	            " title = '" . mysql_escape_string($title) . "'," .             
+	            " urlThumbs = '" . mysql_escape_string($url_thumbs) . "'," .
+	            " urlPlay = '" . mysql_escape_string($urlVideo) . "'," .
 	            " duration = '" . $duration . "'," .
 	            " showtimeidentifier = '" . $showtime_identifier . "'," .
 	            " category = '" . $categories . "'" .
