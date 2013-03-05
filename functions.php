@@ -50,8 +50,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   $state = $record_new -> state;
   $position = $record_new -> position;
   $status = $record_new -> status;
-  $urlThumbs = $record_new -> urlThumbs;
-  $urlPlay = $record_new -> urlPlay;
+  $replace_video = $record_new -> urlThumbs;
   $acquider_id = $record_new -> acquiredIdentifier;
   $view_video_state = $record_new -> viewVideoModule;
   $duration = "";
@@ -107,10 +106,10 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
   
    if ((!$private) && (!$insert_into_page))
     $wimtvpro_url = wimtvpro_checkCleanUrl("pages", "embedded.php?c=" . $content_item_new . "&s=" . $showtime_identifier);
-    $video  = "<a class='wimtv-thumbnail' href='" . $wimtvpro_url . "'>" . $replace_video . "</a>";
+    $replace_video  = "<a class='wimtv-thumbnail' href='" . $wimtvpro_url . "'>" . $replace_video . "</a>";
    if (($private) && ($insert_into_page))
     $wimtvpro_url = wimtvpro_checkCleanUrl("pages", "embedded.php?c=" . $content_item_new . "&s=" . $showtime_identifier);
-    $video  = "<a class='wimtv-thumbnail' href='" . $wimtvpro_url . "'>" . $replace_video . "</a>";
+    $replace_video  = "<a class='wimtv-thumbnail' href='" . $wimtvpro_url . "'>" . $replace_video . "</a>";
    if ($replace_video) {
     $form_st = '
 		<div class="free">FREE OF CHARGE</div>
@@ -195,21 +194,15 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
     $style_view = "";
     $href_view = wimtvpro_checkCleanUrl("pages", "embedded.php?c=" . $content_item_new . "&s=" . $showtime_identifier);
     $title_view = "View Video";
-    $play=TRUE;
     
   }
   else {
     $style_view = "";
-    if ($urlPlay!="") {
-      $href_view = wimtvpro_checkCleanUrl("pages", "embeddedAll.php?c=" . $content_item_new);
-      $play=TRUE;
-    }
-    else $play=FALSE;
+    $href_view = wimtvpro_checkCleanUrl("pages", "embeddedAll.php?c=" . $content_item_new);
     $title_view = "Preview Video";
   }
  
-   if($play==TRUE)
-     $my_media .= "<a class='viewThumb' " . $style_view . " title='" .  $title_view . "' href='#' id='" . $href_view . "'><span class='icon_view'></span></a>";
+    $my_media .= "<a class='viewThumb' " . $style_view . " title='" .  $title_view . "' href='#' id='" . $href_view . "'><span class='icon_view'></span></a>";
     
    $my_media .= "	</div>" . $form . "<div class='loader'></div></div>"; 
 
@@ -222,7 +215,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
         //$replace_video = str_replace('#thumbnail-' . $content_item_new. '"' , 'embedded/
         $my_media .= "<div class='headerBox'>";//<div class='icon'><a class='addThumb' href='#' id='" . $showtime_identifier . "'>" . __("Add") . "</a>  <a class='removeThumb' href='#' id='" . $showtime_identifier . "'>" . __("Remove") . "</a></div>";
     }
-    $my_media .= $video . "<div class='title'>" . $title . "</div>";
+    $my_media .= $replace_video . "<div class='title'>" . $title . "</div>";
     if ($insert_into_page) {
       $my_media .= '<input type="hidden" value="' . $_GET['post_id'] . '" name="post_id">';
       $my_media .= "W <input style='width:30px;' maxweight='3' class='w' type='text' value='300'>px  -  H <input style='width:30px;' maxweight='3' class='h' type='text' value='200'>px";
@@ -440,7 +433,7 @@ if (isset($_POST["wimtvpro_live"])) {
     $fields_string = "name=" . $name . "&url=" . $url . "&eventDate=" . $giorno . "&paymentMode=" . $typemode;
     $fields_string .= "&eventHour=" . $ora[0] . "&eventMinute=" . $ora[1] . "&duration=" . $duration . "&durationUnit=Minute&publicEvent=" . $public;
     
-    $fields_string .= "&recordEvent=" . $record;
+    //$fields_string .= "&recordEvent=" . $record;
     
     $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
     $url_live = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
@@ -501,33 +494,4 @@ function change_post_status($post_id,$status){
 }
 function wimtvpro_checkCleanUrl($base, $url) {
   return plugins_url($base . "/" . $url, __FILE__);
-}
-
-
-function getDateRange($startDate, $endDate, $format="d/m/Y"){
-
-    //Create output variable
-
-    $datesArray = array();
-
-    //Calculate number of days in the range
-
-    $total_days = round(abs(strtotime($endDate) - strtotime($startDate)) / 86400, 0) + 1;
-
-    if($days<0) { return false; }
-
-    //Populate array of weekdays and counts
-
-    for($day=0; $day<$total_days; $day++)
-
-    {
-
-        $datesArray[] = date($format, strtotime("{$startDate} + {$day} days"));
-
-    }
-
-    //Return results array
-
-    return $datesArray;
-
 }
