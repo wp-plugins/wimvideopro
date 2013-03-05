@@ -345,11 +345,11 @@ jQuery(document).ready(function(){
                   jQuery(this).colorbox({href:jQuery(this).attr("id")});
                 });
                 jQuery("a.wimtv-thumbnail").click( function(){
-			    if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
-					var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
-					jQuery(this).colorbox({href:url});
-				}
-
+				    if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
+						var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
+						jQuery(this).colorbox({href:url});
+					}
+				});
                 
 				jQuery(".icon_Putshowtime,.icon_AcquiPutshowtime").click(function(){
 					callViewForm(jQuery(this));					
