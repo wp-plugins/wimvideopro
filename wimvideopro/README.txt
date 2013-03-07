@@ -82,10 +82,12 @@ That's it! Enjoy your WimTVPro plugin.
 * Added video privacy in all page and use shortcode for videos
 = 2.1 =
 * Fixed bug puload video, Version Final
+= 2.2 =
+* Version with Wimlive and Report 
 
 
 == Upgrade Notice ==
-Into version 2.0 added Playlist videos. When you update insert newly user and password wimtv.
+Into version 2.0 added Playlist videos and Report. When you update insert newly user and password wimtv.
 
 == Contacts ==
 For product support and general information:
