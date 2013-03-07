@@ -243,7 +243,7 @@ function wimtvpro_menu(){
     $user = wp_get_current_user();
     //For Admin
     if ($user->roles[0] == "administrator"){
-      add_menu_page('WimTvPromENU', 'WimTvPro', 'administrator', 'WimTvPro', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
+      add_menu_page('WimTvPro', 'WimTvPro', 'administrator', 'WimTvPro', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
 
       add_submenu_page('WimTvPro', 'Configuration', 'Configuration', 'administrator', 'WimTvPro', 'wimtvpro_configure');
       add_submenu_page('WimTvPro', 'My Media', 'My Media', 'administrator', 'WimVideoPro_MyMedia', 'wimtvpro_mymedia');
@@ -255,7 +255,7 @@ function wimtvpro_menu(){
     }
     
     if ($user->roles[0]=="author") {
-      add_menu_page('WimTvPromENU', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
+      add_menu_page('WimTvPro', 'Streaming Wimtv', 'author', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
     }
     if ($user->roles[0]=="editor") {
       add_menu_page('My Streaming', 'Streaming Wimtv', 'editor', 'WimVideo', 'wimtvpro_mystreaming', plugins_url('images/iconMenu.png', __FILE__), 6);
