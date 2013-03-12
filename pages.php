@@ -259,8 +259,7 @@ function wimtvpro_upload(){
             	  'showtimeidentifier' => ''
             	 )
            	  );
-           	  $upload = TRUE;
-              include("sync.php");
+
  		   }
           
            else{
