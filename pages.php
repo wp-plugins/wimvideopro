@@ -82,11 +82,11 @@ function wimtvpro_mystreaming(){
         jQuery(this).colorbox({href:url});
        });
        jQuery("a.wimtv-thumbnail").click( function(){
-      if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
-		var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
-		jQuery(this).colorbox({href:url});
-	  }
-
+	      if( jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").length  ) {
+			var url = jQuery(this).parent().children(".headerBox").children(".icon").children("a.viewThumb").attr("id");
+			jQuery(this).colorbox({href:url});
+		  }
+		});
      }); 
     
     </script>';
