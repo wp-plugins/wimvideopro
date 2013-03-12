@@ -135,7 +135,7 @@ function wimtvpro_configure(){
           }
           update_option('wp_sandbox', $_POST['sandbox']);
           update_option( 'wp_urlVideosWimtv','videos');
-          update_option( 'wp_urlVideosDetailWimtv','videos?details=true');
+          update_option( 'wp_urlVideosDetailWimtv','videos?details=true&incomplete=true');
           update_option( 'wp_urlThumbsWimtv','videos/{contentIdentifier}/thumbnail');
           update_option( 'wp_urlEmbeddedPlayerWimtv','videos/{contentIdentifier}/embeddedPlayers?get=1');
           update_option( 'wp_urlPostPublicWimtv','videos/{contentIdentifier}/showtime');
