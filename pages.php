@@ -20,12 +20,58 @@ function wimtvpro_mymedia (){
     
     </script>';
 
+
+
+   	if ($_POST['titleVideo']!="") $sql_where  = " AND title LIKE '%" . $_POST['titleVideo'] . "%' ";
+   	
+   	
+    if ($_POST['ordertitleVideo']!="") $sql_order  = " title " . $_POST['ordertitleVideo'];
+   	
+   	
    	echo " <div class='wrap'><h2>My Media</h2>";
    	echo "<p>Here are stored all video uploaded. If you want to publish on your site one of these videos, move it in My Streaming</p>";
    	$title = "<div class='action'><span class='icon_sync0' title='Syncronize'>Syncronize</span></div>";
-	$getThumbs = $title . "<ul class='items' id='FALSE'>" . wimtvpro_getThumbs(FALSE) . "</ul>"; 
-	echo $getThumbs;
+    echo $title;
+    
+    echo '<form method="post" action="#">';
+   	echo '<b>' . __("Search") . '</b><label for="title">' . "  " . __("Title") . ":</label><input type='text' value='" . $_POST['titleVideo'] . "' name='titleVideo' />";
+   	//echo ' - <label for="title">Search to DATE: </label><input type="text" value="' . $_POST['titleVideo'] . '" name="titleVideo" />';
+   	echo '<input type="submit" class="button button-primary" value="' . __("Search") . '">';
+   	
+   	
+   	echo '<br/><br/><b>' . __("Order")  . '</b><label for="title">' . "  " . __("Title") . ':</label><select name="ordertitleVideo">
+    <option value="ASC"';
+   	if ((!isset($_POST['ordertitleVideo'])) || ($_POST['ordertitleVideo']=="ASC")) echo ' selected="selected" ';
+   		echo '	>ASC</option>
+   				<option value="DESC"';
+   		if ($_POST['ordertitleVideo']=="DESC") echo ' selected="selected" ';
+   		echo '		>DESC</option>
+   		</select>';
+   	echo '<input type="submit" class="button button-primary" value="' . __("Order") . '">';
+   	echo '</form>';
+
+	
+	
+    
+	$getThumbs = "<ul class='items' id='FALSE'>" . wimtvpro_getThumbs(FALSE,TRUE,FALSE,'',$sql_where, $sql_order) . "</ul>"; 
+
+   	
+   	echo $getThumbs;
 	echo "</div>";
+	
+	echo '<script>
+		
+		jQuery(".box_search").click(function(){
+			jQuery(".search2").fadeToggle();
+			
+			if (jQuery(".search2").css("opacity") == 0) jQuery(".box_search").html("' . __("Close") . '");
+			else jQuery(".box_search").html("' . __("Search") . '");
+
+		});
+	
+	</script>';
+
+	
 
 }
    

@@ -5,13 +5,12 @@
   *
   */
 
-function wimtvpro_getThumbs($showtime=FALSE, $private=TRUE, $insert_into_page=FALSE, $type_public="") {
+function wimtvpro_getThumbs($showtime=FALSE, $private=TRUE, $insert_into_page=FALSE, $type_public="", $sql_where="",$sql_order="") {
   global $user,$wpdb;
   $table_name = $wpdb->prefix . 'wimtvpro_video';
   $my_media= "";
   $response_st = "";
-  if (($showtime) && ($showtime=="TRUE")) $sql_where = " AND state='showtime'";
-  else $sql_where = ""; 
+  if (($showtime) && ($showtime=="TRUE")) $sql_where .= " AND state='showtime'";
   if (!$private) {
     if ($type_public == "block") {
       $sql_where .= " AND ((viewVideoModule like '1%') OR (viewVideoModule like '3%')) ";
@@ -20,11 +19,16 @@ function wimtvpro_getThumbs($showtime=FALSE, $private=TRUE, $insert_into_page=FA
       $sql_where .= " AND ((viewVideoModule like '2%') OR (viewVideoModule like '3%')) ";
     }
   }
+
   
-  $array_videos_new_wp = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND position<>0 " . $sql_where . " ORDER BY Position ASC");
+
+  $array_videos_new_wp = $wpdb->get_results("SELECT * FROM {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND position<>0 " . $sql_where . " ORDER BY Position,Title ASC");
 
 
-  $array_videos_new_wp0 = $wpdb->get_results("SELECT * FROM  {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND  position=0 " . $sql_where . " ORDER BY contentidentifier ASC");
+  if ($sql_order == "") $sql_order = "Title ASC";
+	
+
+  $array_videos_new_wp0 = $wpdb->get_results("SELECT * FROM  {$table_name} WHERE uid='" . get_option("wp_userwimtv") . "' AND  position=0 " . $sql_where . " ORDER BY " . $sql_order);
 
 
   $position_new=1;

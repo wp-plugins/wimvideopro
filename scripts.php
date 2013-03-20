@@ -11,7 +11,6 @@
   $acid="";
   $ordina = "";
 
-
   if (isset($_GET['namefunction']))
     $function= $_GET["namefunction"];
   if (isset($_GET['id']))

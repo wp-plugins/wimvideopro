@@ -326,7 +326,7 @@ jQuery(document).ready(function(){
 	jQuery(".icon_sync0").click(function(){
 		jQuery.ajax({
 			context: this,
-			url:  url_pathPlugin + "sync.php",
+			url:   url_pathPlugin  + "sync.php",
 			dataType: "html",
 			data: {sync:true,showtime:jQuery("ul.items").attr("id")},
 			type: "GET",
