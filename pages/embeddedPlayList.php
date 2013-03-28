@@ -40,8 +40,27 @@
 	$channel = $sxe->channel;
 	$playlist = "";
 	foreach ($channel->item as $items) {
-	  $playlist .= "{'file':'" . $items->file . "','image':'" . $items->image . "','title':'" . urlencode($items->title) . "','bufferlength':'0'},";
+	  
+	  $urlPlay = explode("$$", $items->file);
+	 
+	  if (isset($urlPlay[1])) {
+
+	  $playlist .= "{
+	     file: '" . $urlPlay[1] . "',
+		 streamer:'" . $urlPlay[0] . "',
+         'image':'" . $items->image . "',
+         'title':'" . urlencode($items->title) . "'},";
 	  //echo $items->title . " ";
+	  
+	  } else {
+	  
+	  $playlist .= "{
+	     file: '" . $urlPlay[0] . "',
+	     'image':'" . $items->image . "',
+         'title':'" . urlencode($items->title) . "'},";
+
+	  
+	  }
 	}
 	$playlist = substr($playlist , 0, -1);
 
@@ -72,13 +91,16 @@
 		//For jwplayer 5
 		$dirJwPlayer = plugin_dir_url(dirname(__FILE__)) . "script/jwplayer/player.swf"; 
 		$code .= "<script type='text/javascript'>jwplayer('container-" . $idPlayList . "').setup({";
-		$code .=  " modes: [{type: 'flash',src:'" . $dirJwPlayer . "' ,config:{ bufferlength: 0}}],";
-        if (get_option('wp_nameSkin')!="")  echo "skin: '" . $directory . "/" . get_option('wp_nameSkin') . ".zip',";
- 		$code .= $dimensions . "'repeat':'single','bufferlength':'0','flashplayer':'" .  $dirJwPlayer . "','playlist': [" .  $playlist . "],'playlist.position': 'right',	'playlist.size': '" . $playlistSize  . "'});</script>&nbsp;";
+		$code .=  "modes: [{type: 'flash',src:'" . $dirJwPlayer . "'}],";
+        if (get_option('wp_nameSkin')!="") {
+	     $uploads_info = wp_upload_dir();
+	     $directory =  $uploads_info["baseurl"] .  "/skinWim";
+	     $skin = "skin:'" . $directory  . "/" . get_option('wp_nameSkin') . ".zip',";
+	    }
+
+ 		$code .= $skin . $dimensions . "'flashplayer':'" .  $dirJwPlayer . "','playlist': [" .  $playlist . "],'playlist.position': 'right',	'playlist.size': '" . $playlistSize  . "'});</script>&nbsp;";
 		
 		echo $code;
-		
-
 	if (!isset($page))	{
 		echo "<p>Embedded:</p><textarea style='resize: none; width:90%;height:70px;font-size:10px' readonly='readonly' onclick='this.focus(); this.select();'>" . htmlentities($code) . "</textarea>";
 

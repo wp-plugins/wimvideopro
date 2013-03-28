@@ -60,6 +60,7 @@
 		    curl_setopt($st, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		    curl_setopt($st, CURLOPT_SSL_VERIFYPEER, FALSE);
 		    $Jsonarray = curl_exec($st);
+		   
 		    $array_detail = json_decode($Jsonarray);
 		    curl_close($st);
 			
@@ -73,10 +74,12 @@
 			foreach ($channel->item as $items) {
 			   $position = $items->count();
 			}
+			$urlVideo= $array_detail->streamingUrl->streamer . "$$" . $array_detail->streamingUrl->file . "$$" . $array_detail->streamingUrl->auth_token;
+			
 			$item = $channel->addChild('item');
 			$item->addChild('title',$array_detail->title);	
 			$item->addChild('image', $array_detail->thumbnailUrl);
-			$item->addChild('file',$array_detail->url);	
+			$item->addChild('file',$urlVideo);	
 			$item->addChild('description',$array_detail->description);	
 			$item->addChild('position',$position+1);	
 			

@@ -58,11 +58,11 @@
 	        $status = $video["status"];
 	        //$acquired_identifier = $video["acquired_identifier "];
 	        $title= $video["title"];
-	        $urlVideo= $video["url"];
+	        $urlVideo= $video["streamingUrl"]->streamer . "$$" . $video["streamingUrl"]->file . "$$" . $video["streamingUrl"]->auth_token;
 	        $duration= $video["duration"];
 	        $content_item =  $video["contentId"];
 	        $url_thumbs = '<img src="' . $video["thumbnailUrl"] . '"  title="' . $title . '" class="wimtv-thumbnail" />';
-	        $categories = "";
+	        $categories  = "";
 	        $valuesc_cat_st = "";
 	        foreach ($video["categories"] as $key => $value) {
 	          $valuesc_cat_st .= $value->categoryName;
