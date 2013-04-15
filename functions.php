@@ -535,3 +535,57 @@ function getDateRange($startDate, $endDate, $format="d/m/Y"){
     return $datesArray;
 
 }
+
+
+function wimtvpro_alert_reg(){
+
+	//If user isn't register or not inser user and password
+	if ((get_option("wp_registration")=='FALSE') && ((get_option("wp_userwimtv")=="username") && get_option("wp_passwimtv")=="password")){
+	
+		echo "<div class='error'>If you are not a WIMTV's member yet <a href='?page=WimTvPro_Registration'>REGISTER</a> or You have not insert the credentials  <a href='?page=WimTvPro'>SIGN IT</a></div>";
+		
+		return FALSE;
+	
+	} else {
+	
+	
+		return TRUE;
+	
+	}
+}
+
+
+function wimtvpro_viever_jwplayer($userAgent,$contentId,$video,$dirJwPlayer){
+
+$isiPad = (bool) strpos($userAgent,'iPad');
+        $urlPlay = explode("$$",$video[0]->urlPlay); 
+		$isiPhone = (bool) strpos($userAgent,'iPhone');
+		if ($isiPad  || $isiPhone) {
+			$urlPlayIPadIphone = "";
+			$contentId = $video[0]->contentidentifier;
+			
+			$url_video = get_option("wp_basePathWimtv") . get_option("wp_urlVideosWimtv") . "/" . $contentId . "?details=true";
+			$credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
+		    
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,  $url_video);
+			curl_setopt($ch, CURLOPT_USERAGENT,$userAgent); 
+		    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		    curl_setopt($ch, CURLOPT_USERPWD, $credential);
+		    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+		    $response = curl_exec($ch);
+			$arrayjson   = json_decode($response);
+			
+			$urlPlayIPadIphone = $arrayjson->streamingUrl->streamer;
+			$configFile = "'file': '" . $urlPlayIPadIphone . "',";	
+		
+		}	else {
+		
+			$configFile = "'flashplayer':'" . $dirJwPlayer . "','file': '" . $urlPlay[1] . "','streamer':'" . $urlPlay[0] . "',";
+		
+		}
+  return $configFile;
+}
