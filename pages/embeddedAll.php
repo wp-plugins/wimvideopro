@@ -17,8 +17,10 @@
 	
 	if (!isset($arrayPlay[0]->urlThumbs)) $thumbs[1] = "";
 	else $thumbs = explode ('"',$arrayPlay[0]->urlThumbs);
-	
+	$thumbs = str_replace('\\','',$thumbs);
 	$dirJwPlayer = plugin_dir_url(dirname(__FILE__)) . "script/jwplayer/player.swf"; 
+	
+	$configFile  = wimtvpro_viever_jwplayer($_SERVER['HTTP_USER_AGENT'],$contentItem,$arrayPlay,$dirJwPlayer);
 	
 	echo "<script type='text/javascript'>jwplayer('container').setup({";
     if (get_option('wp_nameSkin')!="") {
@@ -30,11 +32,8 @@
     
     
     
- 	echo $skin . $dimensions . "'flashplayer':'" .  $dirJwPlayer . "',
- 	     file: '" . $urlPlay[1] . "',
-		 streamer:'" . $urlPlay[0] . "',
-         image: '" . $thumbs[1] . "',
- 	});</script>&nbsp;";
+ 	echo $skin . $dimensions . $configFile . " image: '" . $thumbs[1] . "',
+ 	});</script>";
  
     $output .= "<h3>" . $arrayPlay[0]->title . " (Preview)</h3>";
     $output .= "<p>Duration: <b>" . $arrayPlay[0]->duration . "</b>";
