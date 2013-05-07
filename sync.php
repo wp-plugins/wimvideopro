@@ -22,7 +22,7 @@
 
   $response = curl_exec($ch);
   $array_json_videos = json_decode($response);
-  
+
   curl_close($ch);
 
   if ($array_json_videos==NULL) {

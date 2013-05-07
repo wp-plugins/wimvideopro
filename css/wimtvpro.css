@@ -184,6 +184,10 @@ div.empty {
 }
 .passwordUrlLive{
 	display:none;
+	color: #000; 
+padding: 10px;
+background-color: #ccddcc;
+
 }
 .passwordUrlLive b.createPass{
 	cursor:pointer;
@@ -400,4 +404,8 @@ div#view_graph div.cols div.col div.countview .barTraffic{
 
 a.wimtv-thumbnail {
 	height:100%; width:100%; display:block; background:#fff url('../images/empty.jpg') no-repeat center center;
+}
+
+iframe {
+	overflow:hidden;
 }

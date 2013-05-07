@@ -40,7 +40,7 @@
       if ($_GET['pricePerViewCurrency']!="")
         $price_per_view_currency = "&pricePerViewCurrency=" . $_GET['pricePerViewCurrency'];
       $post_field = $license_type . $payment_mode . $cc_type . $price_per_view . $price_per_view_currency;
-
+		
         //API  http://www.wim.tv/wimtv-webapp/rest/videos/{contentIdentifier}/showtime
         //curl -u {username}:{password} -d "license_type=TEMPLATE_LICENSE&paymentMode=PAYPERVIEW&pricePerView=50.00&pricePerViewCurrency=EUR" http://www.wim.tv/wimtv-webapp/rest/videos/{contentIdentifier}/showtime
       $url_post_public_wimtv = get_option("wp_basePathWimtv") . str_replace( get_option("wp_replaceContentWimtv"), $id,  get_option("wp_urlPostPublicWimtv"));
@@ -52,23 +52,36 @@
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
       curl_setopt($ch, CURLOPT_USERPWD, $credential);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
       curl_setopt($ch, CURLOPT_POST, TRUE);
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $post_field);
       
       //echo $url_post_public_wimtv;
-      //echo $post_field;
+      
       $response = curl_exec($ch);
+      
+    
+     
+      
+      if ($response)
       $state = "showtime";
       $array_response = json_decode($response);
-      $sql = "UPDATE " . $table_name  . " SET state='" . $state . "' ,showtimeIdentifier='" . $array_response -> showtimeIdentifier . "' WHERE contentidentifier='" . $id . "'";
-      $wpdb->query($sql);
+      if ($array_response->result=="SUCCESS"){
+	      $sql = "UPDATE " . $table_name  . " SET state='" . $state . "' ,showtimeIdentifier='" . $array_response -> showtimeIdentifier . "' WHERE contentidentifier='" . $id . "'";
+	      $wpdb->query($sql);
+	  }
+	  
+	 
       curl_close($ch);
+      
+      echo $response;
       
       //UPDATE PAGE MY STREAMING
 	  update_page_mystreaming();
       
-      echo $response;
+      
       die();
     break;
     case "putAcqST":
@@ -106,6 +119,8 @@
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
       curl_setopt($ch, CURLOPT_USERPWD, $credential);
       curl_setopt($ch, CURLOPT_POST, TRUE);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $post_field);
       $response = curl_exec($ch);
@@ -136,6 +151,8 @@
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
       curl_setopt($ch, CURLOPT_USERPWD, $credential);
       curl_setopt($ch, CURLOPT_POST, TRUE);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
       $response = curl_exec($ch);
       echo $response;
@@ -181,6 +198,8 @@
       curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
       curl_setopt($ch, CURLOPT_USERPWD, $credential);
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
 	  
       $response = curl_exec($ch);
       echo $response;
@@ -194,6 +213,8 @@
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
        curl_setopt($ch, CURLOPT_USERPWD, $credential);
 	   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
       curl_setopt($ch, CURLOPT_POSTFIELDS,"liveStreamPwd=" . $_GET['newPass']);      
       $response = curl_exec($ch);
       echo $response;
@@ -246,6 +267,8 @@
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($ch, CURLOPT_USERPWD, $credential);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		$response = curl_exec($ch);
 		curl_close($ch);
@@ -298,6 +321,25 @@
       die();
     break;
 
+    
+    case "download":
+    	
+    	header("Content-Type: text/xml");
+		header("Content-Disposition: attachment; filename=modulo.xml");
+    	
+    	$urlDownload = get_option("wp_basePathWimtv") . "videos/" . $id . '/download';
+
+		curl_setopt($ch, CURLOPT_URL,  $urlDownload);
+	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+	    
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	    curl_setopt($ch, CURLOPT_USERPWD, $credential);
+	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	    $response = curl_exec($ch);
+		echo readfile ($response);
+    
+    break;
     
     default:
       echo "Non entro";

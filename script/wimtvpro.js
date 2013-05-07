@@ -176,9 +176,11 @@ jQuery(document).ready(function(){
 				jQuery(".form_save").hide();			   
 			},
 			success: function(response) {
+		    
 				var json =  jQuery.parseJSON(response);
+				console.log (json.messages);
 				var result = json.result;
-
+				
 				if (result=="SUCCESS"){
 					jQuery.colorbox.close();
 					element.parent().parent().children(".icon").children("span").hide();				 	
@@ -190,10 +192,12 @@ jQuery(document).ready(function(){
 					element.parent().parent().children(".icon").children("a.viewThumb").attr("id",url);
 					element.parent().remove();			        		
 				} else {
+				    var message = json.messages[0].field + ":" + json.messages[0].message; 
 					jQuery(this).parent().hide(); 
 					jQuery(this).parent().parent().children(".loader").show();
 					jQuery(".icon_sync2").hide();	
 					jQuery(".form_save").show();
+					alert (message);
 				}
 			},
 			error: function(request,error) {
@@ -220,11 +224,7 @@ jQuery(document).ready(function(){
 					text += '<div class="action"><span class="form_save">Save</span><span class="icon_sync2" style="display:none;">Loading...</span></div>';
 				} else if (thisclass.indexOf("ppv") >= 0){
 					text  = '<form><input type="text" name="amount" class="amount" value="00" />.<input type="text" name="amount_cent" class="amount_cent" value="00" maxlength="2"/>';
-					text  += '<select name="currency" class="currency">';
-					text  += '	<option selected="selected"  value="EUR">Euro</option>';
-					text  += '	<option disabled="true" value="USD">Usd</option>';
-					text  += '	<option disabled="true" value="points">Points</option>';
-					text  += '</select></form>';
+					text  += 'Euro<input type="hidden" name="currency" class="currency" value="EUR"></form>';
 					text += '<div class="action"><span class="form_save">Save</span><span class="icon_sync2" style="display:none;">Loading...</span></div>';
 				}
 				return text;
@@ -258,10 +258,10 @@ jQuery(document).ready(function(){
 					} else if (thisclass.indexOf("ppv") >= 0){
 						licenseType ="TEMPLATE_LICENSE";
 						paymentMode ="PAYPERVIEW";
-						pricePerView = jQuery(".amount").val() + "." + jQuery(".amount_cent").val();
+						pricePerView = jQuery(".amount").val() + "," + jQuery(".amount_cent").val();
 						pricePerViewCurrency = jQuery(".currency").val();
 					}
-			
+					
 					putST(element,namefunction,licenseType,paymentMode,ccType,pricePerView,pricePerViewCurrency,changeClass,coId,id);
 			
 				});
@@ -393,9 +393,6 @@ jQuery(document).ready(function(){
 	jQuery(".icon_remove").click(function(){
 		callRemoveVideo(jQuery(this));
 	});
-	
-	
-
 	
 	//Request new URL for create a wimlive Url
 	jQuery(".createUrl").click(function(){
@@ -737,5 +734,10 @@ jQuery(document).ready(function() {
             jQuery('#site').html('peer.wim.tv');
         }
      });
-  
+     
+    
+    
+    jQuery(".termsLink").colorbox({width:"80%", height:"80%", iframe:true, href:jQuery(this).attr("href")});
+     
+
 }); 

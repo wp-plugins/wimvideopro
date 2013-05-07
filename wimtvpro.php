@@ -3,7 +3,7 @@
 Plugin Name: Wim Tv Pro
 Plugin URI: http://wimtvpro.tv
 Description: Publish your wimtv's video
-Version: 2.3.3
+Version: 2.4
 Author: WIMLABS
 Author URI: http://www.wimlabs.com
 License: GPLv2 or later
@@ -30,6 +30,7 @@ License: GPLv2 or later
 include ("hooks.php");
 include ("functions.php");
 include ("pages.php");
+include ("wimtvpro_registration.php");
 
 add_shortcode( 'streamingWimtv', 'wimtvpro_shortcode' );
 /* What to do when the plugin is activated? */
@@ -85,6 +86,7 @@ function wimtvpro_install() {
   
 }
 function wimtvpro_setting() {
+  register_setting('configwimtvpro-group', 'wp_registration');
   register_setting('configwimtvpro-group', 'wp_userwimtv');
   register_setting('configwimtvpro-group', 'wp_passwimtv');
   register_setting('configwimtvpro-group', 'wp_nameSkin');
@@ -114,6 +116,7 @@ function wimtvpro_setting() {
   register_setting('profilewimtvpro-group', 'wp_email');
   register_setting('profilewimtvpro-group', 'wp_social');
 
+  add_option( 'wp_registration','FALSE');
   add_option( 'wp_userwimtv','username');
   add_option( 'wp_passwimtv','password');
   add_option( 'wp_nameSkin','');
@@ -139,7 +142,7 @@ function wimtvpro_remove() {
   $table_name2 = $wpdb->prefix . 'wimtvpro_playlist';
   $wpdb->query("DROP TABLE {$table_name2}");
 
-  
+  delete_option('wp_registration');
   delete_option('wp_userwimtv');
   delete_option('wp_passwimtv');
   delete_option('wp_nameSkin');
@@ -243,15 +246,23 @@ function wimtvpro_menu(){
     $user = wp_get_current_user();
     //For Admin
     if ($user->roles[0] == "administrator"){
+    
+          
       add_menu_page('WimTvPro', 'WimTvPro', 'administrator', 'WimTvPro', 'wimtvpro_configure', plugins_url('images/iconMenu.png', __FILE__), 6);      
+		
+      add_submenu_page('WimTvPro', 'Setting', 'Setting', 'administrator', 'WimTvPro', 'wimtvpro_configure');
+      
+      if ((get_option("wp_registration")==FALSE) || ((get_option("wp_userwimtv")=="username") && get_option("wp_passwimtv")=="password")){
+      	add_submenu_page('WimTvPro', 'Registration', 'Registration', 'administrator', 'WimTvPro_Registration', 'wimtvpro_registration');
+      }
 
-      add_submenu_page('WimTvPro', 'Configuration', 'Configuration', 'administrator', 'WimTvPro', 'wimtvpro_configure');
+      
       add_submenu_page('WimTvPro', 'My Media', 'My Media', 'administrator', 'WimVideoPro_MyMedia', 'wimtvpro_mymedia');
       add_submenu_page('WimTvPro', 'My Streaming', 'My Streaming', 'administrator', 'WimVideoPro_MyStreaming', 'wimtvpro_mystreaming');
       add_submenu_page('WimTvPro', 'Upload Video', 'Upload Video', 'administrator', 'WimVideoPro_UploadVideo', 'wimtvpro_upload');
       add_submenu_page('WimTvPro', 'Wim Live', 'Wim Live', 'administrator', 'WimVideoPro_WimLive', 'wimtvpro_live');
       add_submenu_page('WimTvPro', 'Report', 'Report', 'administrator', 'WimVideoPro_Report', 'wimtvpro_Report');
-            
+           
     }
     
     if ($user->roles[0]=="author") {

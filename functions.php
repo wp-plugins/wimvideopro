@@ -121,7 +121,7 @@ function wimtvpro_listThumbs($record_new, $position_new, $replace_content, $show
 		
 		<div class="cc">CREATIVE COMMONS</div>
 		
-		<div class="dis">PAY PER VIEW [upcoming]</div>
+		<div class="ppv">PAY PER VIEW</div>
     ';
    if (!$insert_into_page) {
     $my_media .= "<li id='" . $content_item_new . "'>";
@@ -292,7 +292,11 @@ function wimtvpro_elencoLive($type, $identifier){
     $day =  $value -> eventDate;
     $payment_mode =  $value -> paymentMode;
     if ($payment_mode=="FREEOFCHARGE") $payment_mode="Free";
-    else $payment_mode= pricePerView . " &euro;";
+    else {
+      $payment_mode=  $value->pricePerView . " &euro;";
+
+
+    }
     $durata =  $value->duration . " " . $value -> durationUnit;
     $identifier = $value -> identifier;
     $url_live_embedded = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts/" . $identifier . "/embed";
@@ -405,9 +409,17 @@ if (isset($_POST["wimtvpro_live"])) {
      $payperview = $_POST['payperview'];
      if ($payperview=="0") 
        $typemode = "FREEOFCHARGE";
-     else
-       $typemode = "PAYPERVIEW&pricePerView=" . $payperview . "&ccy=EUR";
+     else {
      
+       $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, get_option("wp_basePathWimtv") . "uuid");
+
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+      $paymentCode= curl_exec($ch);
+      curl_close($ch);
+           
+       $typemode = "PAYPERVIEW&pricePerView=" . $payperview . "&ccy=EUR&paymentCode=" . $paymentCode;
+     }
      $url = $_POST['Url'];
      
      if ($_POST['Giorno']!="") {
