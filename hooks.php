@@ -72,7 +72,7 @@ echo "<div class='clear'></div>";
 	          if ($_POST['sandbox']=="No") {
 	          	update_option( 'wp_basePathWimtv','https://www.wim.tv/wimtv-webapp/rest/');
 	          } else {
-	          	update_option( 'wp_basePathWimtv','http://peer.wim.tv:8080/wimtv-webapp/rest/');
+	          	update_option( 'wp_basePathWimtv','http://peer.wim.tv/wimtv-webapp/rest/');
 	          }
 	          
 	          if (($_POST['sandbox']!=get_option('wp_sandbox')) && (($_POST['userWimtv']=="username") && ($_POST['passWimtv']=="password"))){
