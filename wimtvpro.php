@@ -14,7 +14,7 @@ License: GPLv2 or later
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
     published by the Free Software Foundation.
-
+.j
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -297,6 +297,9 @@ function wimtvpro_install_jquery() {
   wp_enqueue_script('jwplayer', plugins_url('script/jwplayer/jwplayer.js', __FILE__));
   wp_enqueue_script('timepicker', plugins_url('script/timepicker/jquery.ui.timepicker.js', __FILE__));
   wp_enqueue_script('colorbox', plugins_url('script/colorbox/js/jquery.colorbox.js', __FILE__));
+  
+  
+  
   wp_register_style( 'colorboxCss', plugins_url('script/colorbox/css/colorbox.css', __FILE__) );
   
   wp_enqueue_script('colorbox', plugins_url('script/colorbox/js/jquery.colorbox.js', __FILE__));
@@ -310,7 +313,8 @@ function wimtvpro_install_jquery() {
     
   } 
   else {
-    
+    wp_enqueue_script('swfObject', plugins_url('script/swfObject/swfobject.js', __FILE__));
+
     wp_register_style( 'wimtvproCss', plugins_url('css/wimtvpro.css', __FILE__) );
     wp_enqueue_style('wimtvproCss');
     wp_register_style('wimtvproCssCore',plugins_url('script/css/redmond/jquery-ui-1.8.21.custom.css', __FILE__));

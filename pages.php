@@ -291,7 +291,7 @@ function wimtvpro_upload(){
 	            //$url_upload = "http://192.168.31.200:8082/wimtv-webapp/rest/videos";
 	            //$credential = "albi:12345678";
 	            curl_setopt($ch, CURLOPT_URL, $url_upload);
-	            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
+	            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data;filename='" . $_FILES['videoFile']['name'] . "'"));
 	            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 	            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 	            curl_setopt($ch, CURLOPT_USERPWD, $credential);
@@ -444,6 +444,7 @@ function wimtvpro_live(){
 	  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 	  curl_setopt($ch, CURLOPT_USERPWD, $credential);
 	  $response = curl_exec($ch);
+
 	  $dati = json_decode($response, true);
 	  $enabledLive = $dati["liveStreamEnabled"];
 	  curl_close($ch);
@@ -541,6 +542,17 @@ function wimtvpro_live(){
 		  if ($noneElenco==FALSE) {
 		    global $post_type_object;
 		    $screen = get_current_screen();
+		    echo ' 
+		        <script type="text/javascript">
+			  		jQuery(document).ready(function(){
+			    		jQuery(".clickWebProducer").click(function(){
+			    	
+							jQuery(this).colorbox({
+								href:  url_pathPlugin + "pages/live_webproducer.php?id=" + jQuery(this).attr("id")
+							});
+						});
+			    	});
+		    	</script>';
 		    echo " <div class='wrap'><h2>Wim Live";
 		   	echo " <a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=addLive' class='add-new-h2'>" . __( 'Add' ) . " " . __( 'Live' ) . "</a> ";
 		    echo "</h2>";
@@ -548,9 +560,11 @@ function wimtvpro_live(){
 
 		
 		    echo "<table class='wp-list-table widefat fixed pages'>";
-		    echo "<thead><tr><th>Name</th><th>Pay-Per-View</th><th>URL</th><th>Streaming</th><th>Embed Code</th><th></th></tr></thead>";
+		    echo "<thead><tr><th>Name</th><th>Live Now</th><th>Pay-Per-View</th><th>URL</th><th>Streaming</th><th>Embed Code</th><th></th></tr></thead>";
 		    echo "<tbody>";
-		
+			
+			
+			
 		    echo wimtvpro_elencoLive("table", "all");
 		    echo "</thead></table>";
 		    echo "</div>";
@@ -561,6 +575,7 @@ function wimtvpro_live(){
 		      echo ' 
 		        <script type="text/javascript">
 		  		jQuery(document).ready(function(){
+		  		  
 		  		  jQuery(document).ready(function(){jQuery( ".pickatime" ).timepicker({  defaultTime:"00:00"  });});
 		  		  jQuery(document).ready(function(){jQuery( ".pickaduration" ).timepicker({   defaultTime:"00h05",showPeriodLabels: false,timeSeparator: "h", });});});
 		  		  jQuery(document).ready(function(){jQuery( ".pickadate" ).datepicker({

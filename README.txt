@@ -96,14 +96,11 @@ For install "sudo apt-get install php5-curl"
 = 2.3.3 =
 * Fixed Bug Video
 
-= 2.4 =
-* Added Wizard Registration and Video Payment
-
+== Upgrade Notice ==
+Into version 2.0 added Playlist videos and Report. When you update insert newly user and password wimtv.
 
 == Upgrade Notice ==
 Into version 2.0 added Playlist videos and Report. When you update insert newly user and password wimtv.
-Into version 2.4 added Wizard Registration and video and live payment.
-
 
 == Contacts ==
 For product support and general information:
