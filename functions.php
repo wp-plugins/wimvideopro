@@ -265,19 +265,25 @@ function wimtvpro_detail_showtime($single, $st_id) {
   return $array_detail;
 }
 
-function wimtvpro_elencoLive($type, $identifier){  
+function wimtvpro_elencoLive($type, $identifier,$onlyActive=true){  
   $userpeer = get_option("wp_userWimtv");
-  $url_live_select = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts?active=true";
+  
+  $url_live_select = get_option("wp_basePathWimtv") . "liveStream/" . $userpeer . "/" . $userpeer . "/hosts";
+  if ($onlyActive)  $url_live_select .= "?active=true";
+  
   $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
   $ch_select = curl_init();
+  $header[] = "Accept-Language: en-US,en;q=0.5";
   curl_setopt($ch_select, CURLOPT_URL, $url_live_select);
   curl_setopt($ch_select, CURLOPT_VERBOSE, 0);
+  curl_setopt($ch_select, CURLOPT_HTTPHEADER, $header);
   curl_setopt($ch_select, CURLOPT_RETURNTRANSFER, TRUE);
   curl_setopt($ch_select, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
   curl_setopt($ch_select, CURLOPT_USERPWD, $credential);
   curl_setopt($ch_select, CURLOPT_SSL_VERIFYPEER, FALSE);
   $json  =curl_exec($ch_select);
   $arrayjson_live = json_decode($json);
+  //var_dump ($json);
   //$arrayST["showtimeIdentifier"] = $arrayjson_live->{"showtimeIdentifier"};
   $count = -1;
   $output = "";
@@ -314,11 +320,41 @@ function wimtvpro_elencoLive($type, $identifier){
     //$embedded_code = htmlentities(curl_exec($ch_embedded));
     //$embedded_iframe = '<iframe id="com-wimlabs-player" name="com-wimlabs-player" src="' . $urlPeer . '/liveStreamEmbed/' . $identifier . '/player?width=692&height=440" style="min-width: 692px; min-height: 440px;"></iframe>';
     $embedded_code = '<textarea readonly="readonly" onclick="this.focus(); this.select();">' . $embedded_iframe . '</textarea>'; 
-    if ($type=="table") 
+    if ($type=="table") {
+      
+      //Check Live is now
+
+     
+      $dataNow = date("d/m/Y"); 
+      $dataLive = explode(" ",$day);
+      $arrayData = explode ("/",$dataLive[0]);
+	  $arrayOra = explode (":",$dataLive[1]);
+     
+      $timeStampInizio =  mktime($arrayOra[0],$arrayOra[1],0,$arrayData[1],$arrayData[0],$arrayData[2]);
+      
+      $secondiDurata = 60 * $durata;
+      $ora= date("H:i:s", $secondiDurata);
+      $arrayDurata = explode (":",$ora);
     
+      $timeStampFine =  mktime($arrayOra[0]+$arrayDurata[0],$arrayOra[1]+$arrayDurata[1],$arrayOra[2]+$arrayDurata[2],$arrayData[1],$arrayData[0],$arrayData[2]);
+
+      $timeStampNow =  mktime(date("H"),date("i"),date("s"),date("m"),date("d"),date("Y"));
+
+ 	  
+      $liveIsNow = false;
+      if ($dataNow == $dataLive[0]){
+      //if (($timeStampNow>=$timeStampInizio) && ($timeStampNow<$timeStampFine )) {
+			 $liveIsNow = true;
+      }
+     
+     
+     
       $output .="<tr>
-      <td>" . $name . "</td>
-      <td>" . $payment_mode . "</td>
+      <td>" . $name . "</td>";
+      if ($liveIsNow)  $output .=" <td><a href='#' class='clickWebProducer' id='" . $identifier . "'><img src='" . plugins_url('images/webcam.png', __FILE__) . "'></a></td>";
+      else $output .="<td></td>";
+      
+      $output .=  "<td>" . $payment_mode . "</td>
       <td>" . $url . "</td>
       <td>" . $day . "<br/>" . $durata . "</td>
       <td>" . $embedded_code . "</td>
@@ -326,6 +362,7 @@ function wimtvpro_elencoLive($type, $identifier){
       <a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=modifyLive&id=" . $identifier . "'>" . __("Edit") . "</a> |
        <a href='" . $_SERVER['REQUEST_URI'] . "&namefunction=deleteLive&id=" . $identifier . "'>" . __("Delete") . "</a></td>
       </tr>";
+    }
     elseif ($type=="list") {
       if ($count==0) $output .= "";
       elseif ($count>0) $output .="<li><b>" . $name . "</b> " . $payment_mode . " - " . $day . " - " . $durata . "</li>";

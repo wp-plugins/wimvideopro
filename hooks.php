@@ -205,9 +205,9 @@ echo "<div class='clear'></div>";
 						
 						
 						
-						<input type="hidden" value="No" name="sandbox"> 
-			<table class="form-table"> <!-- SANDBOX -->
-				<!--tr>	 
+						<!--input type="hidden" value="No" name="sandbox"--> 
+			<table class="form-table"> 
+				<tr>	 
 					<th><label for="edit-sandbox">Please select "no" to use the plugin on the WimTV server. Select "yes" to try the service only on test server</label></th>
 					<td>
 						<select id="edit-sandbox" name="sandbox" class="form-select">
@@ -215,7 +215,7 @@ echo "<div class='clear'></div>";
 						<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
 						</select>
 					</td>
-				</tr>-->
+				</tr>
 			
 							<tr>
 								<th><label for="edit-publicPage">Would you added a public MyStreaming Page?</label></th>
@@ -406,7 +406,7 @@ echo "<div class='clear'></div>";
 			  echo str_replace("live","current",$submenu);
 
 
-				if (!isset($dati['liveStreamPwd'])) $dati['liveStreamPwd']= get_option("wp_passwimtv");
+			  if (!isset($dati['liveStreamPwd'])) $dati['liveStreamPwd']= get_option("wp_passwimtv");
 				
 				
 			  echo '<div class="clear"></div>
