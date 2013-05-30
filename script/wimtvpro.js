@@ -258,7 +258,7 @@ jQuery(document).ready(function(){
 					} else if (thisclass.indexOf("ppv") >= 0){
 						licenseType ="TEMPLATE_LICENSE";
 						paymentMode ="PAYPERVIEW";
-						pricePerView = jQuery(".amount").val() + "," + jQuery(".amount_cent").val();
+						pricePerView = jQuery(".amount").val() + "." + jQuery(".amount_cent").val();
 						pricePerViewCurrency = jQuery(".currency").val();
 					}
 					
@@ -738,6 +738,7 @@ jQuery(document).ready(function() {
     
     
     jQuery(".termsLink").colorbox({width:"80%", height:"80%", iframe:true, href:jQuery(this).attr("href")});
-     
+    
+	
 
 }); 

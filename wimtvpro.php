@@ -192,6 +192,7 @@ function wimtvpro_create_metadata_table($table_name) {
 	            uid varchar(100) NOT NULL COMMENT 'User identifier',
 	            contentidentifier varchar(100) NOT NULL COMMENT 'Contentidentifier Video',
 	            state varchar(100) NOT NULL COMMENT 'Showtime or no',
+	            filename varchar(100) NOT NULL COMMENT 'Filename and extention',
 	            status varchar(100) NOT NULL COMMENT 'OWNED-ACQUIRED-PERFORMING',
 	            acquiredIdentifier varchar(100) NOT NULL,
 	            mytimestamp int(11) NOT NULL COMMENT 'My timestamp',

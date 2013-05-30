@@ -49,7 +49,7 @@
 	     file: '" . $urlPlay[1] . "',
 		 streamer:'" . $urlPlay[0] . "',
          'image':'" . $items->image . "',
-         'title':'" . urlencode($items->title) . "'},";
+         'title':'" . str_replace ("+" ," ", urlencode($items->title)) . "'},";
 	  //echo $items->title . " ";
 	  
 	  } else {
@@ -57,7 +57,7 @@
 	  $playlist .= "{
 	     file: '" . $urlPlay[0] . "',
 	     'image':'" . $items->image . "',
-         'title':'" . urlencode($items->title) . "'},";
+         'title':'" .  str_replace ("+" ," ", urlencode($items->title)) . "'},";
 
 	  
 	  }

@@ -3,6 +3,8 @@
 define('BASE_URL', get_bloginfo('url'));
 
 function wimtvpro_configure(){
+  $uploads_info = wp_upload_dir();
+
   $submenu = "<ul class='subsubsub'>";
   $submenu .= "<li><a href='admin.php?page=WimTvPro' class='config'>Configuration</a> |";
   $submenu .= "<li><a href='admin.php?page=WimTvPro&pack=1' class='packet'>Pricing</a> |";
@@ -38,9 +40,10 @@ echo "<div class='clear'></div>";
 	                echo '</strong></p></div>';
 	                $error ++;
 				  } else {
-				  	if ( false === @move_uploaded_file( $tmpfile, $directory . "/" . $file) ) {
+				  	if ( false === @move_uploaded_file( $tmpfile, $uploads_info["basedir"] .  "/skinWim" . "/" . $file) ) {
 				  	  echo '<div class="error"><p><strong>';
 	                  _e("Internal error.");
+	                  echo $uploads_info["basedir"] .  "/skinWim/" . $file;
 	                  echo '</strong></p></div>';
 	                  $error ++;
 		            }
@@ -205,9 +208,9 @@ echo "<div class='clear'></div>";
 						
 						
 						
-						<!--input type="hidden" value="No" name="sandbox"--> 
+						<input type="hidden" value="No" name="sandbox"> 
 			<table class="form-table"> 
-				<tr>	 
+				<!--tr>	 
 					<th><label for="edit-sandbox">Please select "no" to use the plugin on the WimTV server. Select "yes" to try the service only on test server</label></th>
 					<td>
 						<select id="edit-sandbox" name="sandbox" class="form-select">
@@ -215,7 +218,7 @@ echo "<div class='clear'></div>";
 						<option value="Yes" <?php if (get_option("wp_sandbox")=="Yes") echo "selected='selected'" ?>>Yes, for Developer or Test</option>
 						</select>
 					</td>
-				</tr>
+				</tr-->
 			
 							<tr>
 								<th><label for="edit-publicPage">Would you added a public MyStreaming Page?</label></th>
@@ -406,8 +409,8 @@ echo "<div class='clear'></div>";
 			  echo str_replace("live","current",$submenu);
 
 
-			  if (!isset($dati['liveStreamPwd'])) $dati['liveStreamPwd']= get_option("wp_passwimtv");
-				
+			  if (!isset($dati['liveStreamPwd'])) $dati['liveStreamPwd']= "";
+			  if ($dati['liveStreamPwd']=="null") $dati['liveStreamPwd']= "";
 				
 			  echo '<div class="clear"></div>
 			  <p>In this section you can enable the more functional live streaming settings for your needs. Choose between "Live streaming" to stream your own events, or use the features reserved for event Resellers and event Organizers to sell and organize live events.</p>';
@@ -460,7 +463,7 @@ echo "<div class='clear'></div>";
 			              		<th><label for="liveStreamPwd">' . __("Password") . '</label></th>
 								<td>
 								  <input type="password" id="edit-liveStreamPwd" name="liveStreamPwd" value="' . $dati['liveStreamPwd'] .  '"/>
-								  <div class="description"> If you do not change the password is the same of credential wimtv </div>
+								  <div class="description"> This password is required for the live streaming </div>
 								</td>
 							</tr>
 
@@ -627,7 +630,7 @@ echo "<div class='clear'></div>";
 		  		jQuery(document).ready(function(){
 		  		  jQuery( "#edit-hidePublicShowtimeVideos" ).change( function(){
 
-		          	if  (jQuery(this).val()=="true") {
+		          	if  (jQuery(this).val()=="false") {
 				      	jQuery("#viewPage").fadeIn();
 				      }else{		      
 				      	jQuery("#viewPage").fadeOut();
@@ -650,11 +653,11 @@ echo "<div class='clear'></div>";
 						<th><label for="edit-name">' . __("Index and show public videos into WimTv's site") . '</label></th>
 						<td>
 							<select id="edit-hidePublicShowtimeVideos" name="hidePublicShowtimeVideos" class="form-select">
-								<option value="true"';
-								if ( $dati['hidePublicShowtimeVideos']=="true") echo 'selected="selected"';
-								echo '>' . __("Yes") . '</option>
 								<option value="false"';
 								if ( $dati['hidePublicShowtimeVideos']=="false") echo 'selected="selected"';
+								echo '>' . __("Yes") . '</option>
+								<option value="true"';
+								if ( $dati['hidePublicShowtimeVideos']=="true") echo 'selected="selected"';
 								echo '>No</option>
 							</select>
 	
@@ -671,7 +674,7 @@ echo "<div class='clear'></div>";
 				 
 				 <table id="viewPage"';
 				 
-				 if ( $dati['hidePublicShowtimeVideos']=="false") echo ' style="display:none; "';
+				 if ( $dati['hidePublicShowtimeVideos']=="true") echo ' style="display:none; "';
 				 
 				 echo ' class="form-table">
 					

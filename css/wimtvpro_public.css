@@ -24,7 +24,7 @@ width: 100%;
 ul.itemsPublic li div.thumbPublic {
 	margin: 0 auto; width: 180px;
 	padding: 0;
-	z-index: 2;
+	z-index: 2; height: 175px;
 	position: relative;
 	float: left;
 }

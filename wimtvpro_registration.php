@@ -8,10 +8,8 @@ function wimtvpro_registration(){
 		if ($_POST['sandbox']=="No") {
           	update_option( 'wp_basePathWimtv','https://www.wim.tv/wimtv-webapp/rest/');
         } else {
-          	update_option( 'wp_basePathWimtv','http://peer.wim.tv:8080/wimtv-webapp/rest/');
+          	update_option( 'wp_basePathWimtv','http://peer.wim.tv/wimtv-webapp/rest/');
         }
-
-    
    		$error = 0;
 		
 		if ($_POST['reg_RepeatPassword']!=$_POST['reg_Password']){
@@ -28,20 +26,22 @@ function wimtvpro_registration(){
             curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-type: application/json","Accept: application/json","Accept-Language: en-US,en;q=0.5"));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch, CURLOPT_POST, TRUE);
-             $post = '{"acceptEula":"' . $_POST['reg_acceptEula'] . '","name":"' . $_POST['reg_name'] . '","surname":"' . $_POST['reg_Surname'] . '","email":"' . $_POST['reg_Email'] . '"';
+           
+            $post = '{"acceptEula":"' . $_POST['reg_acceptEula'] . '","name":"' . $_POST['reg_name'] . '","surname":"' . $_POST['reg_Surname'] . '","email":"' . $_POST['reg_Email'] . '"';
 			$post .= ',"username":"' . $_POST['reg_Username'] . '","password":"' . $_POST['reg_Password'] . '"';
 			$post .= ',"role":"webtv","sex":"' . $_POST['reg_sex'] . '","dateOfBirth":"01/01/1900"}';
-
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post); 
             $response = curl_exec($ch);
-            curl_close($ch);
+
+       
+ curl_close($ch);
 
             $arrayjsonst = json_decode($response);
-      
-            if ($arrayjsonst->result=="SUCCESS") {
-         
-              
+      	    if ($arrayjsonst){
+              if ($arrayjsonst->result=="SUCCESS") {
+ 
                echo '
               <script type="text/javascript">
 				<!--
@@ -55,36 +55,25 @@ function wimtvpro_registration(){
           	  update_option('wp_passwimtv', $_POST['reg_Password']);
           	  
           	  update_option('wp_registration', 'TRUE');
-          	  
-          	  
-          	  
-
             } else {
             
             	foreach ($arrayjsonst->messages as $message){
             		$testoErrore .=  $message->field . " : " .  $message->message . "<br/>";         	
             	}
             	$error++;
-            
             }
-
-
-		
+          } else {
+          	$testoErrore .= "Internal error. Contact wimTV's administrator.";
+          	$error ++;
+          }
 		} else {
-		
 			$error++;
-			 $testoErrore .= "You are not compiled all field required";
-		
+			$testoErrore .= "You are not compiled all field required";
 		}
-		
-		
 		if ($error>0) {
 			$styleReg = "display:block";
-			echo '<div class="error"><p><strong>' . $testoErrore . '</strong></p></div>';
-		
-		}
-		
-    
+			echo '<div class="error"><p><strong>' . $testoErrore . '</strong></p></div>';	
+		} 
     }
 	echo " <div class='wrap'><h2>Registration WimTv</h2>";
 	echo "</div>";

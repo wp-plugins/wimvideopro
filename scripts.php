@@ -322,24 +322,6 @@
     break;
 
     
-    case "download":
-    	
-    	header("Content-Type: text/xml");
-		header("Content-Disposition: attachment; filename=modulo.xml");
-    	
-    	$urlDownload = get_option("wp_basePathWimtv") . "videos/" . $id . '/download';
-
-		curl_setopt($ch, CURLOPT_URL,  $urlDownload);
-	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
-	    
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-	    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-	    curl_setopt($ch, CURLOPT_USERPWD, $credential);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-	    $response = curl_exec($ch);
-		echo readfile ($response);
-    
-    break;
     
     default:
       echo "Non entro";

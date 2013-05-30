@@ -46,7 +46,7 @@
     //echo $url;
     curl_setopt($ch, CURLOPT_URL,  $url);
     curl_setopt($ch, CURLOPT_VERBOSE, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-us,en;'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-us,en;'));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     curl_setopt($ch, CURLOPT_USERPWD, $credential);
@@ -77,19 +77,8 @@
     
 
     
-    echo "<p class='icon_downloadVideo' id='" . $arrayST["contentId"] . "'>Download</p>";   
+    //echo "<p class='icon_downloadVideo' id='" . $arrayST["contentId"] . "'>Download</p>";   
     echo $output . "</div>";
  }   
 ?>
 
-<script>
-
-	jQuery('.icon_downloadVideo').click(function() {
-	
-		var uri = '<?php echo get_option("wp_basePathWimtv") . "videos/";?>' + jQuery(this).attr("id") + '/download';
-		jQuery('body').append('<iframe src="' + uri + '" style="display:none;" />');
-	
-	});
-
-
-</script>

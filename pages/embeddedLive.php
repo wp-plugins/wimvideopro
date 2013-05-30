@@ -1,9 +1,11 @@
 <?php
   include("../../../../wp-blog-header.php");
 
-echo wimtvpro_elencoLive("video", "0") . "<br/>";
-$upcoming = wimtvpro_elencoLive("list", "0");
-if ($upcoming!="Aren't Event Live")
-	echo "UPCOMING EVENT<br/>" . wimtvpro_elencoLive("list", "0");
+echo "<div class='live_video'></div>";
+echo "<div class='live_list'></div>";
+
+wimtvpro_elencoLive("video", "0");
+wimtvpro_elencoLive("list", "0");
+
 
 ?>
