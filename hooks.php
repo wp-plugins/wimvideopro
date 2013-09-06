@@ -768,7 +768,7 @@ echo "<div class='wrap'>";
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-			    'Content-Type: application/json', 'Accept-Language: en-US,en;q=0.5',                                                                               
+			    'Content-Type: application/json', 'Accept-Language: ' . $_SERVER["HTTP_ACCEPT_LANGUAGE"],                                                                               
 			    'Content-Length: ' . strlen($data_string))                                                                       
 			);  
 	
@@ -810,7 +810,7 @@ echo "<div class='wrap'>";
 			curl_setopt($ch, CURLOPT_URL, get_option("wp_basePathWimtv") . "userpacket/payment/check");
 			curl_setopt($ch, CURLOPT_VERBOSE, 0);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-			 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+			 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: ' . $_SERVER["HTTP_ACCEPT_LANGUAGE"]));
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($ch, CURLOPT_USERPWD, $credential);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -838,7 +838,7 @@ echo "<div class='wrap'>";
 
 		$ch = curl_init();
 	    curl_setopt($ch, CURLOPT_URL, $url_packet_user);
-	   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: en-US,en;q=0.5'));
+	   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: '  . $_SERVER["HTTP_ACCEPT_LANGUAGE"]));
 	    curl_setopt($ch, CURLOPT_VERBOSE, 0);
 	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -863,7 +863,7 @@ echo "<div class='wrap'>";
 
 		$url_packet = get_option("wp_basePathWimtv") . "commercialpacket"; 
 
-	  	$header = array("Accept-Language: en-US,en;q=0.5");
+	  	$header = array("Accept-Language: " . $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
 
 
 		$ch2 = curl_init();

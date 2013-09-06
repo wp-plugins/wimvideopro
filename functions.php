@@ -273,7 +273,7 @@ function wimtvpro_elencoLive($type, $identifier,$onlyActive=true){
   
   $credential = get_option("wp_userWimtv") . ":" . get_option("wp_passWimtv");
   $ch_select = curl_init();
-  $header[] = "Accept-Language: en-US,en;q=0.5";
+  $header[] = "Accept-Language:" . $_SERVER["HTTP_ACCEPT_LANGUAGE"];
   curl_setopt($ch_select, CURLOPT_URL, $url_live_select);
   curl_setopt($ch_select, CURLOPT_VERBOSE, 0);
   curl_setopt($ch_select, CURLOPT_HTTPHEADER, $header);
