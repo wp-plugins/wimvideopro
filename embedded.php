@@ -62,7 +62,7 @@
     $output .= "<p>" . $arrayST["description"] . "</p>";
     $output .= "<p>Duration: <b>" . $arrayST["duration"] . "</b>";
     if (count($arrayST["categories"])>0){
-      $output .= "<br/>Categories<br/>";
+      $output .= "<br/>" . __("Categories","wimtvpro") . "<br/>";
       foreach ($arrayST["categories"] as $key => $value) {
         $valuescCatST = "<i>" . $value->categoryName . ":</i> ";
         $output .= $valuescCatST;
@@ -82,3 +82,14 @@
  }   
 ?>
 
+<script>
+
+	jQuery('.icon_downloadVideo').click(function() {
+	
+		var uri = '<?php echo get_option("wp_basePathWimtv") . "videos/";?>' + jQuery(this).attr("id") + '/download';
+		jQuery('body').append('<iframe src="' + uri + '" style="display:none;" />');
+	
+	});
+
+
+</script>
