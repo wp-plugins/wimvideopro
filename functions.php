@@ -333,39 +333,39 @@ if (isset($_POST["wimtvpro_live"])) {
   //Check fields required
     
   if (strlen(trim($_POST['name']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a wimlive's name.");
-      echo '</strong></p></div>';
+     /* echo '<div class="error"><p><strong>';
+      _e("You must write a title.","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
   if (strlen(trim($_POST['payperview']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a price for your event (or free of charge).");
-      echo '</strong></p></div>';
+     /* echo '<div class="error"><p><strong>';
+      _e("You must write a price for your event (or free of charge).","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
   if (strlen(trim($_POST['Url']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a url.");
-      echo '</strong></p></div>';
+      /*echo '<div class="error"><p><strong>';
+      _e("You must write a url.","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
   if (strlen(trim($_POST['Giorno']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a day of your event.");
-      echo '</strong></p></div>';
+     /* echo '<div class="error"><p><strong>';
+      _e("You must write a day of your event.","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
   if (strlen(trim($_POST['Ora']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a hour of your event.");
-      echo '</strong></p></div>';
+     /* echo '<div class="error"><p><strong>';
+      _e("You must write a hour of your event.","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
   if (strlen(trim($_POST['Duration']))==0) {        
-      echo '<div class="error"><p><strong>';
-      _e("You must write a duration of your event.");
-      echo '</strong></p></div>';
+     /* echo '<div class="error"><p><strong>';
+      _e("You must write a duration of your event.","wimtvpro");
+      echo '</strong></p></div>';*/
       $error ++;
   }
     
@@ -410,6 +410,7 @@ if (isset($_POST["wimtvpro_live"])) {
     curl_setopt($ch, CURLOPT_URL, $url_live);
     curl_setopt($ch, CURLOPT_USERPWD, $credential);
     curl_setopt($ch, CURLOPT_POST, TRUE);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept-Language: " . $_SERVER["HTTP_ACCEPT_LANGUAGE"]));
     curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string); 
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     $response = curl_exec($ch);
@@ -419,15 +420,15 @@ if (isset($_POST["wimtvpro_live"])) {
       $result = $message->{"result"};
       if ($result=="SUCCESS") {
         echo '<div class="updated"><p><strong>';
-        if ($function=="modify") _e("Update successfully.");
-        else _e("Insert successfully.");
+        if ($function=="modify") _e("Update successful","wimtvpro");
+        else _e("Insert successful","wimtvpro");
         echo '</strong></p></div>'; 
       }
       else {
         $formset_error = "";
         foreach ($message->messages as $value) {
           if ($value->message!="")
-            $formset_error .= $value->field . "=" . $value->message;
+            $formset_error .=  $value->message  . "<br/>";
         }
         echo '<div class="error"><p><strong>API wimtvpro error: ' . $formset_error . '</strong></p></div>';
       }
