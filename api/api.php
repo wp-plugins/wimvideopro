@@ -65,17 +65,30 @@ class Api {
         return Request::delete($url);
     }
 
+    function downloadRequest($subUrl) {
+        $request = Api::getRequest($subUrl);
+        $request->no_body = true;
+        return $request;
+    }
+
     function authenticate($request) {
         return $request->authenticateWith($this->username, $this->password);
     }
 
     function execute($request, $expectedMimeType='text/html', $clientLanguage=true) {
         $request->expects($expectedMimeType);
+        $request->addHeader("X-Wimtv-Pro-Plugin-Name", "wordpress");
         if ($clientLanguage)
             $request->addHeader('Accept-Language', $_SERVER["HTTP_ACCEPT_LANGUAGE"]);
         $request->_curlPrep();
         //d($request);
-        return $request->send();
+        try {
+            $result = $request->send();
+        } catch (\Exception $exception) {
+            trigger_error($exception->getMessage(), E_USER_WARNING);
+            $result = "";
+        }
+        return $result;
     }
 
 }
