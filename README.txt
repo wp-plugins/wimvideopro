@@ -35,8 +35,6 @@ WimTVPro allows its users to:
 
 The plugin is integrated into the menu and is divided in section, to always have an ordered control of content.
 For more details about WimTVPro's functionalities visit: http://wimtvpro.tv/functionalities.html
-
-Demo site: http://casacanada.eu/sbaruarocktour
  
 == Installation ==
 
@@ -104,4 +102,4 @@ Visit the [plugin's website](http://wimtvpro.tv)
 
 == Last updated ==
 
-10/08/2014
+11/08/2014
