@@ -8,6 +8,10 @@ ProgUtils.api.getBaseUrl = function (){
 	return url_pathPlugin;
 };
 
+/*** For images ***/
+ProgUtils.api.getBaseImageUrl = function (){
+    return imageBase + "/";
+};
 
 /*** GET ***/
 
@@ -78,4 +82,23 @@ ProgUtils.api.deleteItems = function(progId,itemId) {
  */
 ProgUtils.api.removeItem = function(progId, itemId) {
 	return url_pathPlugin + 'functions/programming/deleteItems.php?progId=' + progId + '&itemId='+ itemId;
+};
+
+/**
+ * Update di un Item esistente sul palinsesto in un dato momento
+ *
+ * @param: progId	il programming identifier di riferimento
+ * @param: itemId	ref. a item da aggiornare
+ */
+ProgUtils.api.updateItem = function(progId, itemId) {
+    return url_pathPlugin + 'functions/programming/updateItem.php?progId=' + progId + '&itemId='+ itemId;
+};
+
+/**
+ * Copia tutti gli elementi di un item in una o pià date di destinazione
+ *
+ * @param: progId	il programming identifier di riferimento
+ */
+ProgUtils.api.mimicItem = function(progId) {
+    return buildUrl(programmingBase, "api=mimicItem&progId=" + progId);
 };

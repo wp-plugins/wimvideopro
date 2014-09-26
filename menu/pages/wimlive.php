@@ -2,6 +2,12 @@
 /**
  * Written by walter at 24/10/13
  */
+/**
+ * Mostra la pagina WimLive presente nel menu laterale, la logica viene gestita nella prima parte, del codice,
+ * il markup rimane sotto.
+ * TODO: questa divisione tra markup e logica può essere migliorata prendendo spunto dai templates di Drupal.
+ */
+
 include_once('modules/wimlive.php');
 
 
@@ -26,7 +32,11 @@ function wimtvpro_live() {
     switch ($page) {
 
         case "addLive":
-
+//            // NS TEMP:
+//            var_dump($page);
+//            PRINT "<HR/>";
+//            var_dump($_POST);
+//            exit;
             $noneElenco = TRUE;
             //aggiungere script per pickdata e pickhour
             if (isset($_POST["wimtvpro_live"])) {

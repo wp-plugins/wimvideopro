@@ -1,9 +1,10 @@
 <?php
 
 /**
- * @file
- * This file is use for the upload video and function.
- *
+ * Mostra la pagina di upload di un video presente nel menu laterale,
+ * la logica viene gestita nella prima parte, del codice,
+ * il markup rimane sotto.
+ * TODO: questa divisione tra markup e logica può essere migliorata prendendo spunto dai templates di Drupal.
  */
 function wimtvpro_upload() {
     $view_page = wimtvpro_alert_reg();
@@ -12,7 +13,7 @@ function wimtvpro_upload() {
     }
     $serverActiveFile = ini_get("file_uploads");
     $category = wimtvpro_readOptionCategory();
-
+    
     if ($serverActiveFile!=1) {
         echo '<div class="error"><p><strong>';
         _e("Attention! Your server does not support upload of files, please modify your server settings with file_uploads = On.","wimtvpro");
@@ -43,7 +44,8 @@ function wimtvpro_upload() {
                 <p>
                     <label for="edit-descriptionfile"><?php _e("Description","wimtvpro"); ?> </label>
                     <br/>
-                    <textarea id="edit-descriptionfile" name="descriptionfile" cols="150" rows="5"></textarea>
+                    <!--NS: We have reduced number of columns-->
+                    <textarea id="edit-descriptionfile" name="descriptionfile" cols="110" rows="5"></textarea>
                 </p>
 
                 <p>
