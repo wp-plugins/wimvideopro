@@ -106,4 +106,4 @@ Visit the [plugin's website](http://wimtvpro.tv)
 
 == Last updated ==
 
-26/09/2014
+30/10/2014
