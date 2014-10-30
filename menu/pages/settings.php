@@ -225,9 +225,9 @@ function wimtvpro_configure() {
                     break;
 
 //                NS: Disabling "Features Page"
-//                case "4": //Features
-//                    settings_features($dati);
-//                    break;
+                case "4": //Features
+                    settings_features($dati);
+                    break;
             }
 
             echo "</div>";

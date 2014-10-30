@@ -2,14 +2,17 @@
 
 /**
  * Written by walter at 30/10/13
+ * Updated by Netsense s.r.l. 2014
  */
 include_once("api.php");
 
-use Api\Api;
+use \Api\Api;
 use \Httpful\Mime;
 use \Httpful\Request;
 
 function initApi($host, $username, $password) {
+    // NS: TEMP
+    // $host="http://peer.wim.tv:8080/wimtv-webapp/rest/";
     Api::initApiAccessor($host, $username, $password);
 }
 
@@ -127,9 +130,12 @@ function apiCommercialPacket() {
 //VIDEOS
 function apiGetShowtimes() {
     $apiAccessor = getApi();
-    $request = $apiAccessor->getRequest('users/' . $apiAccessor->username . '/showtime?details=true');
+// NS: use new authenticated API to avoid the hidePublicShowtimeVideos bug
+//    $request = $apiAccessor->getRequest('users/' . $apiAccessor->username . '/showtime?details=true');
+    $request = $apiAccessor->getRequest('showtimeVideos?details=true');
     $request = $apiAccessor->authenticate($request);
-    return $apiAccessor->execute($request);
+    $response = $apiAccessor->execute($request, "application/json");
+    return $response;
 }
 
 function apiPublishOnShowtime($id, $parameters) {
@@ -156,13 +162,12 @@ function apiGetThumbsVideo($contentId) {
     return $apiAccessor->execute($request, 'text/xml, application/xml');
 }
 
-function apiGetDetailsVideo($contentId, &$error_response=null) {
+function apiGetDetailsVideo($contentId, &$error_response = null) {
     $apiAccessor = getApi();
     $request = $apiAccessor->getRequest('videos/' . $contentId . '?details=true');
     $request = $apiAccessor->authenticate($request);
     $response = $apiAccessor->execute($request, "application/json");
-    if ($response=="" && isset($error_response))
-    {
+    if ($response == "" && isset($error_response)) {
         $error_response = $apiAccessor->execute($request);
     }
     return $response;
