@@ -75,14 +75,15 @@ jQuery(document).ready(function() {
             enctype: 'multipart/form-data',
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", this.progress, false);
+                xhr.upload.addEventListener("progress", this.progresso, false);
                 return xhr;
             },
             beforeSend: function() {
                 jQuery(".progress-bar").show();
                 //progressLoop.start();
             },
-            progress: function(e) {
+            progresso: function(e) {
+            console.warn(e);
                 if (e.lengthComputable) {
                     //calculate the percentage loaded on plugin host server
                     var pct = ((e.loaded / e.total) * 100 / 2);

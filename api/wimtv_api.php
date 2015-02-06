@@ -216,6 +216,10 @@ function apiDeleteFromShowtime($id, $stid) {
 
 //LIVE
 function apiChangePassword($password) {
+    /*
+     * ATTENZIONE: API NON SUPPORTATA (vedi apiEditProfile)
+     */
+
     $apiAccessor = getApi();
     $request = $apiAccessor->putRequest("users/" . $apiAccessor->username . "/updateLivePwd");
     $params = array('liveStreamPwd' => $password);
@@ -245,15 +249,26 @@ function apiGetLive($host_id, $timezone = "") {
     return $apiAccessor->execute($request, 'application/json');
 }
 
-function apiGetLiveIframe($host_id, $timezone = "") {
+function apiGetLiveIframe($host_id, $params = "") {
     $apiAccessor = getApi();
     $url = $apiAccessor->liveHostsUrl . '/' . $host_id . '/embed';
-    if (strlen($timezone))
-        $url .= '?timezone=' . $timezone;
+    if (strlen($params)) {
+        $url .="?" . $params;
+    }
     $request = $apiAccessor->getRequest($url);
     $request = $apiAccessor->authenticate($request);
     return $apiAccessor->execute($request, 'text/xml, application/xml');
 }
+
+//function apiGetLiveIframe($host_id, $timezone = "") {
+//    $apiAccessor = getApi();
+//    $url = $apiAccessor->liveHostsUrl . '/' . $host_id . '/embed';
+//    if (strlen($timezone))
+//        $url .= '?timezone=' . $timezone;
+//    $request = $apiAccessor->getRequest($url);
+//    $request = $apiAccessor->authenticate($request);
+//    return $apiAccessor->execute($request, 'text/xml, application/xml');
+//}
 
 function apiAddLive($parameters, $timezone = null) {
     $apiAccessor = getApi();

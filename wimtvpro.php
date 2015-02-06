@@ -4,7 +4,7 @@
   Plugin Name: Wim Tv Pro
   Plugin URI: http://wimtvpro.tv
   Description: WimTVPro is the video plugin that adds several features to manage and publish video on demand, video playlists and stream live events on your website.
-  Version: 3.5
+  Version: 3.5.1
   Author: WIMLABS
   Author URI: http://www.wimlabs.com
   License: GPLv2 or later
@@ -490,7 +490,9 @@ function wimtvpro_shortcode_streaming($atts) {
             $uploads_info = wp_upload_dir();
             $directory = $uploads_info["baseurl"] . "/skinWim";
 
-            $skin = "&skin=" . $directory . "/" . get_option('wp_nameSkin') . ".zip";
+            $nomeFilexml = wimtvpro_searchFile($uploads_info["basedir"] . "/skinWim/" . get_option('wp_nameSkin') . "/wimtv/", "xml");
+            $skin = "&skin=" . $directory . "/" . get_option('wp_nameSkin') . "/wimtv/" . $nomeFilexml;
+//            $skin = "&skin=" . $directory . "/" . get_option('wp_nameSkin') . ".zip";
         }
         else
             $skin = "";
@@ -500,6 +502,9 @@ function wimtvpro_shortcode_streaming($atts) {
         $response = apiGetPlayerShowtime($id, $params);
         wp_reset_query();
 // NS: changed outer div to include width and heigth
+// Here in wordpress it works. In drupal we had to change the returned
+// iframe on-the-fly, because simply addig an outer div with proper
+// W and H parameters was not sufficient
         return "<div style='text-align:center;height:" . $height . "px;width:" . $width . "px'>" . $response . "</div>";
 //	  return "<div style='text-align:center'>" . $response . "</div>";
     } else {
@@ -518,9 +523,34 @@ function wimtvpro_shortcode_wimvod($atts) {
 }
 
 function wimtvpro_shortcode_wimlive($atts) {
-    $embeddedLive = plugins_url('embedded/embeddedLive.php', __FILE__);
-    $pageLive = "<script>jQuery(document).ready(function(){
-    jQuery.ajax({
+    $pageLive = "";
+    // WE ARE GETTING A SHORTAG LIKE: [wimlive id='urn:wim:tv:livestream:c9309ad5-6cce-4f20-b9aa-552efe858fe4' zone='3600000']
+    if (isset($atts['id']) && isset($atts['zone'])) {
+        $identifier = $atts["id"];
+        $timezone = $atts["zone"];
+        $skin = "";
+        if (get_option('wp_nameSkin') != "") {
+            $uploads_info = wp_upload_dir();
+            $directory = $uploads_info["baseurl"] . "/skinWim";
+
+            $nomeFilexml = wimtvpro_searchFile($uploads_info["basedir"] . "/skinWim/" . get_option('wp_nameSkin') . "/wimtv/", "xml");
+            $skin = "&skin=" . $directory . "/" . get_option('wp_nameSkin') . "/wimtv/" . $nomeFilexml;
+        }
+
+        $params = "timezone=" . $timezone;
+        if ($skin != "") {
+            $params.="&amp;skin=" . $skin;
+        }
+
+        $embedded_iframe = apiGetLiveIframe($identifier, $params);
+        $pageLive = $embedded_iframe;
+    }
+    // WE ARE GETTING A SHORTAG LIKE: [wimlive]
+    else {
+        $embeddedLive = plugins_url('embedded/embeddedLive.php', __FILE__);
+        $pageLive = "<script>
+                        jQuery(document).ready(function(){
+                            jQuery.ajax({
 				context: this,
 				url:  '" . $embeddedLive . "',
 				type: 'GET',
@@ -529,9 +559,10 @@ function wimtvpro_shortcode_wimlive($atts) {
 				success: function(response) {
 						jQuery('.entry-content').append(response);
 				},
-                });
-    });
-	</script>";
+                            });
+                         });
+                    </script>";
+    }
     return $pageLive;
 }
 

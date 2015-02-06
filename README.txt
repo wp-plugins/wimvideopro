@@ -5,7 +5,7 @@ Requires at least: 3.4
 Tested up to: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Stable tag: 3.5
+Stable tag: 3.5.1
 
 WimTVPro is the video plugin that adds several features to manage and publish video on demand, video playlists and stream live events on your website.
 
@@ -95,6 +95,8 @@ Check the [Wimlabs support site](http://support.wim.tv)
 * Minor fixes in live and pay sections. Support for 4.0
 = 3.5 =
 * Version bump
+= 3.5.1 =
+* Skins in player bugfix
 
 == Upgrade Notice ==
 Into version 2.0 added videos Playlist and Report. When you update insert again your wimtv user and password.

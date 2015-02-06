@@ -1,4 +1,5 @@
 <?php
+// EMBEDDED.PHP
 global $user;
 $parse_uri = explode('wp-content', $_SERVER['SCRIPT_FILENAME']);
 $url_include = $parse_uri[0] . 'wp-load.php';
@@ -21,13 +22,16 @@ if (strlen($code) > 0) {
     $showtime = json_decode(wimtvpro_detail_showtime(true, $streamItem));
     if (get_option('wp_nameSkin') != "") {
         $uploads_info = wp_upload_dir();
-        $directory = $uploads_info["baseurl"] . "/skinWim/" . get_option('wp_nameSkin') . "/";
-        $nomeFilexml = wimtvpro_searchFile($uploads_info["basedir"] . "/skinWim/" . get_option('wp_nameSkin'), "xml");
-        $skin = "&skin=" . $directory . "/" . $nomeFilexml;
+//        $directory = $uploads_info["baseurl"] . "/skinWim/" . get_option('wp_nameSkin') . "/";
+//        $nomeFilexml = wimtvpro_searchFile($uploads_info["basedir"] . "/skinWim/" . get_option('wp_nameSkin'), "xml");
+//        $skin = "&skin=" . $directory . "/" . $nomeFilexml;
+        $directory = $uploads_info["baseurl"] . "/skinWim";
+        $nomeFilexml = wimtvpro_searchFile($uploads_info["basedir"] . "/skinWim/" . get_option('wp_nameSkin') . "/wimtv/", "xml");
+        $skin = "&skin=" . $directory . "/" . get_option('wp_nameSkin') . "/wimtv/" . $nomeFilexml;
     } else {
         $skin = "";
     }
-
+    
     $height = get_option("wp_heightPreview");
     $width = get_option("wp_widthPreview");
 
@@ -49,7 +53,7 @@ if (strlen($code) > 0) {
                 }
                 ?>
                 <br/>
-        <?php } ?>
+            <?php } ?>
         </p>
         </div>
         <?php
